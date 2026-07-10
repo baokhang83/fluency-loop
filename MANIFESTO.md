@@ -108,12 +108,10 @@ and committed alongside it.
       design.md
 ```
 
-Example:
+Example — a feature's `design.md` opens with a `# Design: <feature>` heading, then embeds
+its diagrams. On GitHub these render as actual diagrams, not source:
 
-```markdown
-# Design: adding rate limiting to the gateway
-
-## Class diagram
+**Class diagram**
 
 ```mermaid
 classDiagram
@@ -122,7 +120,7 @@ classDiagram
   RateLimiter --> RedisRateLimitStore
 ```
 
-## Sequence: incoming request
+**Sequence: incoming request**
 
 ```mermaid
 sequenceDiagram
@@ -131,7 +129,6 @@ sequenceDiagram
   RateLimiter->>RedisRateLimitStore: get bucket
   RedisRateLimitStore-->>RateLimiter: bucket state
   RateLimiter-->>Gateway: accept/reject
-```
 ```
 
 Mermaid stays the default rendering choice: no extra tooling, renders natively on GitHub,
