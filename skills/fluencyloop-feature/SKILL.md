@@ -41,8 +41,10 @@ Open the `design.md` stub. Draft the two defaults from the intent and the codeba
 Keep both Mermaid blocks **top-level** (never nested inside another code fence) so GitHub
 renders them. Add an interaction/flow view only if it earns its place. Show the diagrams to
 the user, refine once with their input, and write them into `design.md`. Check them against
-the constitution (`.fluencyloop/constitution.md`) — if a shape conflicts with a principle, say
-so plainly; do not silently "fix" it.
+the constitution — read `.fluencyloop/constitution.md`, and **if it's a pointer** (a
+`Source of truth:` line naming another file, e.g. `.specify/memory/constitution.md`), read
+*that* file for the real principles. If a shape conflicts with a principle, say so plainly;
+do not silently "fix" it.
 
 Do not over-invest here: the design is a shape to build against, not a spec to ratify.
 

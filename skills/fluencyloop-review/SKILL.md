@@ -28,10 +28,11 @@ Produce a concise, reviewer-facing summary:
 - **Decisions that matter**, grouped by session — each as *chose X over Y because Z*, with
   its `where:` code anchor. Lead with the decisions carrying `trust: ⚠` — those are where a
   reviewer should look hardest.
-- **Constitution check:** scan each decision's `constitution:` field and the
-  `.fluencyloop/constitution.md` principles; **flag** any decision that appears to conflict, or
-  any principle-relevant decision that was never checked. Flag as a surfaced note — never a
-  blocker.
+- **Constitution check:** scan each decision's `constitution:` field against the project's
+  principles — read `.fluencyloop/constitution.md`, and **if it's a pointer** (`Source of
+  truth:` naming another file, e.g. `.specify/memory/constitution.md`), read *that* for the
+  real principles. **Flag** any decision that appears to conflict, or any principle-relevant
+  decision that was never checked. Flag as a surfaced note — never a blocker.
 - **Design pointer:** link the feature's `design.md` so the reviewer can see the shape.
 
 ## 3. Output
