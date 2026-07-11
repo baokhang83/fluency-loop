@@ -51,12 +51,16 @@ fluency init --vendor-skills   # commits the skills into the repo's .claude/skil
 
 ## Use it
 
-| Stage | Skill (in your agent) | Or directly |
-|-------|-----------------------|-------------|
-| 1. Constitution *(maintainer, once)* | `fluency-constitution` | — |
-| 2–3. Feature: design → build + teach *(per feature)* | `fluency-feature` | `fluency feature "<intent>"` |
-| 4. Review *(per feature)* | `fluency-review` | `fluency review` |
-| Safety net *(post-merge)* | `fluency-backfill` | — |
+| Stage | Slash command (in your agent) | Or the CLI directly |
+|-------|-------------------------------|---------------------|
+| 1. Constitution *(maintainer, once)* | `/fluency-constitution` | — |
+| 2–3. Feature: design → build + teach *(per feature)* | `/fluency-feature` | `fluency feature "<intent>"` |
+| 4. Review *(per feature)* | `/fluency-review` | `fluency review` |
+| Safety net *(post-merge)* | `/fluency-backfill` | — |
+
+You invoke a stage two ways: **type the slash command** (e.g. `/fluency-feature`), or just
+**describe the task** ("start a feature to add rate limiting") and your agent triggers the
+matching skill from its description. Both run the same skill.
 
 The **skills** carry the interactive, calibrated behaviour (teaching at slice boundaries,
 one-question-at-a-time constitution authoring). The **scripts** carry the deterministic
