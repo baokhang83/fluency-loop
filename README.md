@@ -22,7 +22,7 @@ Nothing gates a merge. Work that skips the loop is caught **after** merge by `ba
 **1. Once per machine** — from a clone of this repo:
 
 ```bash
-git clone https://github.com/baokhang83/fluency-loop && cd fluency-loop
+git clone https://github.com/baokhang83/fluencyloop && cd fluencyloop
 ./install.sh
 ```
 

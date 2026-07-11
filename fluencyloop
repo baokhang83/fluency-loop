@@ -31,7 +31,7 @@ SELF="$(resolve_self)"
 # Find the scripts dir: the distribution checkout / install lib, or the current repo's
 # vendored copy after `fluencyloop init`.
 if [ -d "$SELF/scripts/bash" ]; then
-    BIN="$SELF/scripts/bash"          # running from the fluency-loop checkout or install lib
+    BIN="$SELF/scripts/bash"          # running from the fluencyloop checkout or install lib
 elif [ -d "$SELF/scripts" ] && [ -f "$SELF/scripts/common.sh" ]; then
     BIN="$SELF/scripts"               # running from an installed .fluencyloop/
 else
