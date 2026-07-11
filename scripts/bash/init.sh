@@ -62,15 +62,26 @@ if ! { [ -f "$GITIGNORE" ] && grep -qxF '.fluencyloop/**/calibration.md' "$GITIG
     printf '\n# FluencyLoop: calibration is per-developer and never committed\n.fluencyloop/**/calibration.md\n' >> "$GITIGNORE"
 fi
 
+# FluencyLoop creates a branch per feature. Set push.autoSetupRemote (repo-local) so the
+# first `git push` on a new feature branch sets its upstream automatically — no
+# `git push --set-upstream` friction. (git >= 2.37; ignored on older versions.)
+AUTO_REMOTE_SET=false
+if [ "$(git -C "$ROOT" config --local push.autoSetupRemote 2>/dev/null)" != "true" ]; then
+    git -C "$ROOT" config --local push.autoSetupRemote true
+    AUTO_REMOTE_SET=true
+fi
+
 if $JSON_MODE; then
     emit_json \
         fluency_dir "$FLUENCY" \
         constitution "$CONSTITUTION" \
         constitution_created "$CREATED_CONSTITUTION" \
         skills_vendored "$VENDOR_SKILLS" \
-        skills_dir "$SKILLS_DEST"
+        skills_dir "$SKILLS_DEST" \
+        push_autoremote_set "$AUTO_REMOTE_SET"
 else
     echo "Initialised FluencyLoop in $FLUENCY"
+    $AUTO_REMOTE_SET && echo "  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)"
     $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (stub — run fluencyloop-constitution to fill it)"
     if [ -n "$SKILLS_DEST" ]; then
         echo "  skills:       $SKILLS_DEST (vendored into repo)"
