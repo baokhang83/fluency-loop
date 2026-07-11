@@ -1,6 +1,4 @@
-# FluencyLoop
-
-*Keep the people behind a codebase collectively fluent in it, as AI writes more of it.*
+<img width="1983" height="793" alt="image" src="https://github.com/user-attachments/assets/84b171e0-98ed-4fdc-9198-1aadfc35d369" />
 
 The code and your fluency in it are produced together, or not at all. See
 [MANIFESTO.md](MANIFESTO.md) for the why.
