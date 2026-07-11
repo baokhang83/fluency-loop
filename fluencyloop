@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# fluency — the FluencyLoop CLI dispatcher.
+# fluencyloop — the FluencyLoop CLI dispatcher.
 #
 # Deterministic commands run directly; the interactive stages (constitution, feature,
 # review, backfill) are driven by the skills your coding agent loads from .claude/skills.
@@ -7,15 +7,15 @@
 # call it.
 #
 # Usage:
-#   fluency init                       scaffold .fluency/ state into this repo
-#   fluency feature "<intent>"         declare a feature (branch + design stub)
-#   fluency session "<intent>"         open a session in the active feature
-#   fluency review [--base <ref>]      assemble the PR view for the active feature
-#   fluency help
+#   fluencyloop init                       scaffold .fluencyloop/ state into this repo
+#   fluencyloop feature "<intent>"         declare a feature (branch + design stub)
+#   fluencyloop session "<intent>"         open a session in the active feature
+#   fluencyloop review [--base <ref>]      assemble the PR view for the active feature
+#   fluencyloop help
 
 set -euo pipefail
 
-# Resolve this script's real location, following symlinks (so a symlinked `fluency` on the
+# Resolve this script's real location, following symlinks (so a symlinked `fluencyloop` on the
 # PATH still finds its own scripts). Portable: macOS `readlink` has no -f.
 resolve_self() {
     local src="${BASH_SOURCE[0]}" dir
@@ -29,15 +29,15 @@ resolve_self() {
 SELF="$(resolve_self)"
 
 # Find the scripts dir: the distribution checkout / install lib, or the current repo's
-# vendored copy after `fluency init`.
+# vendored copy after `fluencyloop init`.
 if [ -d "$SELF/scripts/bash" ]; then
     BIN="$SELF/scripts/bash"          # running from the fluency-loop checkout or install lib
 elif [ -d "$SELF/scripts" ] && [ -f "$SELF/scripts/common.sh" ]; then
-    BIN="$SELF/scripts"               # running from an installed .fluency/
+    BIN="$SELF/scripts"               # running from an installed .fluencyloop/
 else
     # Fall back to the current repo's vendored copy.
     ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-    BIN="${ROOT:+$ROOT/.fluency/scripts}"
+    BIN="${ROOT:+$ROOT/.fluencyloop/scripts}"
 fi
 
 # Print the contiguous comment header (everything after the shebang, up to the first

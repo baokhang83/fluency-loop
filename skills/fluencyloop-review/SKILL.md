@@ -1,9 +1,9 @@
 ---
-name: fluency-review
-description: 'FluencyLoop Stage 4. Assemble the reviewer-facing PR view from a feature''s sessions — a feature is a branch, so it assembles itself from git. Use when preparing a PR description, reviewing a FluencyLoop feature, or when the user says "fluency review", "assemble the PR view", or "summarise this feature for review".'
+name: fluencyloop-review
+description: 'FluencyLoop Stage 4. Assemble the reviewer-facing PR view from a feature''s sessions — a feature is a branch, so it assembles itself from git. Use when preparing a PR description, reviewing a FluencyLoop feature, or when the user says "fluencyloop review", "assemble the PR view", or "summarise this feature for review".'
 ---
 
-# fluency-review — Stage 4, assemble the PR view
+# fluencyloop-review — Stage 4, assemble the PR view
 
 A **feature is a branch**, so the review view assembles itself: no manual linking. You turn
 the feature's sessions into a summary a reviewer can read to get fluent fast.
@@ -13,8 +13,8 @@ the feature's sessions into a summary a reviewer can read to get fluent fast.
 From the feature branch (or pass `--slug`):
 
 ```bash
-.fluency/scripts/assemble-pr-view.sh --json           # paths, commit range, session list
-.fluency/scripts/assemble-pr-view.sh                  # the raw markdown (sessions inlined)
+.fluencyloop/scripts/assemble-pr-view.sh --json           # paths, commit range, session list
+.fluencyloop/scripts/assemble-pr-view.sh                  # the raw markdown (sessions inlined)
 ```
 
 The `--json` form gives `feature`, `range`, `commits`, and the session files. The plain
@@ -29,7 +29,7 @@ Produce a concise, reviewer-facing summary:
   its `where:` code anchor. Lead with the decisions carrying `trust: ⚠` — those are where a
   reviewer should look hardest.
 - **Constitution check:** scan each decision's `constitution:` field and the
-  `.fluency/constitution.md` principles; **flag** any decision that appears to conflict, or
+  `.fluencyloop/constitution.md` principles; **flag** any decision that appears to conflict, or
   any principle-relevant decision that was never checked. Flag as a surfaced note — never a
   blocker.
 - **Design pointer:** link the feature's `design.md` so the reviewer can see the shape.
@@ -45,4 +45,4 @@ the PR unless explicitly asked.
 - **Surface, don't gate.** Flag unverified trust and constitution conflicts; never block.
 - **Truthful assembly.** Summarise what the sessions actually say; if a decision has no
   journaled `why`, say it's undocumented rather than inventing one — or suggest
-  **fluency-backfill**.
+  **fluencyloop-backfill**.

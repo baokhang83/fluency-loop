@@ -3,11 +3,11 @@
 #
 # It does three things:
 #   1. copies the tool into ~/.fluencyloop/lib          (scripts, templates, skills, CLI)
-#   2. symlinks the `fluency` CLI onto your PATH          (~/.local/bin by default)
+#   2. symlinks the `fluencyloop` CLI onto your PATH          (~/.local/bin by default)
 #   3. installs the interactive skills user-wide          (~/.claude/skills)
 #
-# After this, `fluency init` works in any repo, and your coding agent sees the skills
-# everywhere. Per-project state still lives in each repo's .fluency/ (via `fluency init`).
+# After this, `fluencyloop init` works in any repo, and your coding agent sees the skills
+# everywhere. Per-project state still lives in each repo's .fluencyloop/ (via `fluencyloop init`).
 #
 # Usage: ./install.sh [--bin-dir <dir>] [--no-skills]
 
@@ -32,12 +32,12 @@ done
 mkdir -p "$LIB"
 rm -rf "$LIB/scripts" "$LIB/templates" "$LIB/skills"
 cp -R "$SRC/scripts" "$SRC/templates" "$SRC/skills" "$LIB/"
-cp "$SRC/fluency" "$LIB/fluency"
-chmod +x "$LIB/fluency" "$LIB/scripts/bash/"*.sh
+cp "$SRC/fluencyloop" "$LIB/fluencyloop"
+chmod +x "$LIB/fluencyloop" "$LIB/scripts/bash/"*.sh
 
 # 2. Put the CLI on the PATH.
 mkdir -p "$BIN_DIR"
-ln -sf "$LIB/fluency" "$BIN_DIR/fluency"
+ln -sf "$LIB/fluencyloop" "$BIN_DIR/fluencyloop"
 
 # 3. Install skills user-wide so the agent sees them in every project.
 SKILLS_DEST="$HOME/.claude/skills"
@@ -48,11 +48,11 @@ fi
 
 echo "FluencyLoop installed."
 echo "  lib:     $LIB"
-echo "  cli:     $BIN_DIR/fluency  ->  $LIB/fluency"
+echo "  cli:     $BIN_DIR/fluencyloop  ->  $LIB/fluencyloop"
 $INSTALL_SKILLS && echo "  skills:  $SKILLS_DEST (user-wide)"
 echo
-if ! command -v fluency >/dev/null 2>&1; then
+if ! command -v fluencyloop >/dev/null 2>&1; then
     echo "Add the CLI to your PATH (then restart your shell):"
     echo "  echo 'export PATH=\"$BIN_DIR:\$PATH\"' >> ~/.zshrc"
 fi
-echo "Next: cd into a project and run 'fluency init'."
+echo "Next: cd into a project and run 'fluencyloop init'."

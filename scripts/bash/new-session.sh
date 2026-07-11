@@ -33,7 +33,7 @@ fi
 
 FEATURE="$(feature_path "$FEATURE_SLUG")"
 if [ ! -d "$FEATURE" ]; then
-    echo "Error: feature '$FEATURE_SLUG' not found at $FEATURE. Run 'fluency feature' first." >&2
+    echo "Error: feature '$FEATURE_SLUG' not found at $FEATURE. Run 'fluencyloop feature' first." >&2
     exit 1
 fi
 

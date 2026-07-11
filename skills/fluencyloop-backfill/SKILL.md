@@ -1,9 +1,9 @@
 ---
-name: fluency-backfill
-description: 'FluencyLoop safety net. Reconstruct journal entries for work that shipped without going through the loop — reads a merged diff, drafts a feature + session with decision blocks, marks every entry trust: ⚠ unverified for human review. Use post-merge, or when the user says "fluency backfill", "document this PR after the fact", or "we skipped the loop on this one".'
+name: fluencyloop-backfill
+description: 'FluencyLoop safety net. Reconstruct journal entries for work that shipped without going through the loop — reads a merged diff, drafts a feature + session with decision blocks, marks every entry trust: ⚠ unverified for human review. Use post-merge, or when the user says "fluencyloop backfill", "document this PR after the fact", or "we skipped the loop on this one".'
 ---
 
-# fluency-backfill — reconstruct-and-flag, never gate
+# fluencyloop-backfill — reconstruct-and-flag, never gate
 
 FluencyLoop never blocks a merge. The safety net for work that skipped the loop is
 **post-merge backfill**: it gives ad-hoc work a home retroactively. Backfilled rationale had
@@ -36,8 +36,8 @@ forks, not every line. For each, draft a `## Decision:` block:
 Create the feature + session to hold them:
 
 ```bash
-.fluency/scripts/new-feature.sh --json "<inferred feature intent>"
-.fluency/scripts/new-session.sh --json --slug "<feature-slug>" "<inferred slice intent>"
+.fluencyloop/scripts/new-feature.sh --json "<inferred feature intent>"
+.fluencyloop/scripts/new-session.sh --json --slug "<feature-slug>" "<inferred slice intent>"
 ```
 
 Then write the drafted decision blocks into the session file.

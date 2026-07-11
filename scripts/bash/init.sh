@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # init.sh — scaffold FluencyLoop state into the current repo (Stage 0, once per project).
-# Creates .fluency/ with a constitution stub and the features/ tree. Skills are installed
+# Creates .fluencyloop/ with a constitution stub and the features/ tree. Skills are installed
 # user-wide by install.sh, so they are NOT vendored per-project unless you ask.
 #
 # Usage: init.sh [--json] [--vendor-skills]
@@ -23,13 +23,13 @@ done
 
 ROOT="$(repo_root)"
 if [ -z "$ROOT" ]; then
-    echo "Error: 'fluency init' must be run inside a git repository." >&2
+    echo "Error: 'fluencyloop init' must be run inside a git repository." >&2
     exit 1
 fi
 
 # The distribution root is two levels up from scripts/bash.
 DIST_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-FLUENCY="$ROOT/.fluency"
+FLUENCY="$ROOT/.fluencyloop"
 
 mkdir -p "$FLUENCY/features" "$FLUENCY/scripts" "$FLUENCY/templates"
 
@@ -58,8 +58,8 @@ fi
 # calibration profile is global and must never be committed. Guard against a project
 # accidentally vendoring one.
 GITIGNORE="$ROOT/.gitignore"
-if ! { [ -f "$GITIGNORE" ] && grep -qxF '.fluency/**/calibration.md' "$GITIGNORE"; }; then
-    printf '\n# FluencyLoop: calibration is per-developer and never committed\n.fluency/**/calibration.md\n' >> "$GITIGNORE"
+if ! { [ -f "$GITIGNORE" ] && grep -qxF '.fluencyloop/**/calibration.md' "$GITIGNORE"; }; then
+    printf '\n# FluencyLoop: calibration is per-developer and never committed\n.fluencyloop/**/calibration.md\n' >> "$GITIGNORE"
 fi
 
 if $JSON_MODE; then
@@ -71,7 +71,7 @@ if $JSON_MODE; then
         skills_dir "$SKILLS_DEST"
 else
     echo "Initialised FluencyLoop in $FLUENCY"
-    $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (stub — run fluency-constitution to fill it)"
+    $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (stub — run fluencyloop-constitution to fill it)"
     if [ -n "$SKILLS_DEST" ]; then
         echo "  skills:       $SKILLS_DEST (vendored into repo)"
     else

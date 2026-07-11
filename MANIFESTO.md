@@ -46,7 +46,7 @@ principles                        diagrams         session journal    PR view as
 The contributor's entry point is one command:
 
 ```
-$ fluency feature "adding rate limiting to the gateway"
+$ fluencyloop feature "adding rate limiting to the gateway"
   → creates features/adding-rate-limiting-to-the-gateway/ (on branch feature/…)
   → prompts for design.md            (Stage 2)
   → build begins, teaching + journaling as it goes   (Stage 3)
@@ -72,7 +72,7 @@ backfill, not blocked before it (see *Enforcement & backfill*).
 
 ## Stage 1: Constitution
 
-`.fluency/constitution.md` — the project's principles, written (or generated
+`.fluencyloop/constitution.md` — the project's principles, written (or generated
 interactively, in the spirit of SpecKit's `speckit-constitution`) once by the maintainer(s)
 and revisited rarely. Unlike SpecKit's constitution, which exists to gate a spec-writing
 ritual, FluencyLoop's constitution exists so stages 2–4 — run fresh for every feature —
@@ -93,7 +93,7 @@ FluencyLoop-sized (see *Relationship to SpecKit / SDD*).
 
 ## Stage 2: Design — diagrams scoped to the feature
 
-Triggered by `fluency feature`, before the feature's build work begins, Stage 2 produces
+Triggered by `fluencyloop feature`, before the feature's build work begins, Stage 2 produces
 the diagrams that show its shape fastest. The two defaults are a **class diagram** and a
 **sequence diagram** — the two that pay their way most often and are first-class Mermaid
 types. Other views (an interaction/flow diagram) are optional prose, added only when they
@@ -101,7 +101,7 @@ earn it. Unlike the constitution, this is **not project-wide** — it's scoped t
 and committed alongside it.
 
 ```
-.fluency/
+.fluencyloop/
   constitution.md
   features/
     adding-rate-limiting-to-the-gateway/
@@ -214,7 +214,7 @@ The safety net for work that shipped without going through the loop is **post-me
 backfill**, not a pre-merge gate:
 
 ```
-$ fluency backfill <PR>
+$ fluencyloop backfill <PR>
   → reads the merged diff + commit history
   → drafts a session with decision blocks for the undocumented work
   → marks EVERY backfilled entry  trust: ⚠ unverified
@@ -262,7 +262,7 @@ as the center of gravity. The adoption risk this still carries is tracked honest
 - **Stage 1 is project-scoped** — the constitution is written once by the maintainer,
   applies everywhere, revisited rarely.
 - **Stages 2–4 are feature-scoped, and the contributor declares the feature** — at build
-  time, via `fluency feature "<intent>"`, which creates the feature dir and branch. This
+  time, via `fluencyloop feature "<intent>"`, which creates the feature dir and branch. This
   directly reverses an earlier decision in this project's history ("not features — feature
   dirs only exist because SpecKit's ceremony created them; our audience has none"). That
   reasoning assumed features could only come from a maintainer's up-front planning ceremony.
@@ -275,7 +275,7 @@ as the center of gravity. The adoption risk this still carries is tracked honest
   They nest one level under the feature that owns them.
 
 ```
-.fluency/
+.fluencyloop/
   constitution.md                              ← STAGE 1, project-level, once
 
   features/
@@ -318,7 +318,7 @@ ASSEMBLE  → at PR time, gather the feature(s) whose branch commits are in this
 
 ### Output format: (c) — both
 
-- **Committed `.fluency/features/<feature>/sessions/<name>.md`** — the durable project
+- **Committed `.fluencyloop/features/<feature>/sessions/<name>.md`** — the durable project
   artifact; permanent project memory; how a new contributor gets fluent fast.
   Version-controlled, in-repo.
 - **Generated PR-description summary** — the reviewer-facing view, assembled from the
@@ -329,7 +329,7 @@ design diagrams, the branch, and the sessions that built it), PR is the assemble
 
 ### Session file schema
 
-What actually goes inside a `.fluency/features/<feature>/sessions/<name>.md` — a header
+What actually goes inside a `.fluencyloop/features/<feature>/sessions/<name>.md` — a header
 plus one block per decision. Human-readable first, script-parseable second.
 
 ```markdown
@@ -569,10 +569,10 @@ carefully-governed *maybe-later*, built only if someone actually needs it (evide
 skill(s)          Stage 1: constitution authoring (interactive, speckit-constitution-style)
                            — run once per project by the maintainer
                   Stage 2: design — generate a feature's class + sequence diagrams
-                           — triggered by `fluency feature`
+                           — triggered by `fluencyloop feature`
                   Stage 3: slice-boundary teach in real-time (calibrated to the contributor);
                            supply the journal content the scripts then persist
-                  Stage 4: assemble the PR view; `fluency backfill` — reconstruct-and-flag
+                  Stage 4: assemble the PR view; `fluencyloop backfill` — reconstruct-and-flag
                            gaps on a merged PR (always trust: ⚠, human-reviewed)
 
 scripts           deterministic (so the journal is reliable, not left to the LLM):
@@ -580,7 +580,7 @@ scripts           deterministic (so the journal is reliable, not left to the LLM
                   entries the skill supplies, resolve feature↔branch, assemble the PR view
                   by branch, run backfill's diff→draft, git operations
 
-state             PROJECT state (.fluency/, in-repo):
+state             PROJECT state (.fluencyloop/, in-repo):
                     constitution.md                   → Stage 1, project-level, ONCE
                     features/<feature>/design.md      → Stage 2, this feature's diagrams
                     features/<feature>/sessions/<name>.md
@@ -594,8 +594,8 @@ state             PROJECT state (.fluency/, in-repo):
                     knowledge map (B)                 → computed at query time from a
                                                          project's sessions ∩ git authorship
 
-command surface   fluency feature "<intent>"   → Stage 2–3 entry (dir + branch + design)
-                  fluency backfill <PR>         → post-merge gap reconstruction
+command surface   fluencyloop feature "<intent>"   → Stage 2–3 entry (dir + branch + design)
+                  fluencyloop backfill <PR>         → post-merge gap reconstruction
                   (constitution authoring for Stage 1; PR-view assembly runs at review time)
 ```
 
@@ -634,7 +634,7 @@ the knowledge map (B) is derived rather than persisted anywhere.
    (Claude Code / Cursor). We build *on* that surface; a platform could absorb the idea.
    Counter: a working skill today costs almost nothing to try and dogfood.
 6. **Work that skipped the loop.** Ad-hoc changes with no declared feature are handled by
-   post-merge `fluency backfill`, which gives them a feature + session retroactively — there
+   post-merge `fluencyloop backfill`, which gives them a feature + session retroactively — there
    is deliberately no `features/unfiled/` bucket. The residual risk is that backfill is
    opt-in effort after the fact, so undocumented work stays undocumented until someone runs
    it.
@@ -656,10 +656,10 @@ how mnemo-cache was built (small real thing, dogfooded):
 1. **Build the skills in parallel** — SpecKit's `speckit-constitution` is the structural
    template for stage 1; `speckit-plan` for stage 2's per-feature design; `speckit-clarify`'s
    interactive one-at-a-time loop remains the template for stage 3's capture flow. Ship the
-   `fluency feature` and `fluency backfill` command surface first.
+   `fluencyloop feature` and `fluencyloop backfill` command surface first.
 2. **Dogfood** on a real project (blastradius, or the next mnemo feature) for a week:
-   institute the constitution once, then run `fluency feature → design → build` on a couple
-   of real features, and try `fluency backfill` on a PR that skipped the loop. Does staying
+   institute the constitution once, then run `fluencyloop feature → design → build` on a couple
+   of real features, and try `fluencyloop backfill` on a PR that skipped the loop. Does staying
    fluent *feel* different from generic narration, and does the per-feature setup cost feel
    worth it? That's the whole hypothesis, tested for the cost of a skill file.
 
@@ -669,22 +669,22 @@ how mnemo-cache was built (small real thing, dogfooded):
 
 Refined (2026-07-10) into a concrete, buildable shape. Stage 1 (constitution) is
 maintainer-owned and project-level, once; Stages 2–4 (design, build, review) are
-**contributor-driven per feature**, declared at build time via `fluency feature`. A feature
+**contributor-driven per feature**, declared at build time via `fluencyloop feature`. A feature
 is a branch, so the PR view assembles itself and session files carry no commit SHAs.
-Teaching fires at **slice boundaries**. Nothing gates — post-merge `fluency backfill`
+Teaching fires at **slice boundaries**. Nothing gates — post-merge `fluencyloop backfill`
 reconstructs-and-flags gaps instead. The framing is **additive** (a project constitution on
 top of the original contributor loop), not a flip away from the contributor wedge.
 
 Essay drafted (pre-refinement; needs a pass reflecting the additive framing before
 publishing). No skill built yet. Next concrete steps:
 
-- The `.fluency/constitution.md` template (stage 1, maintainer, project-level).
-- The `.fluency/features/<feature>/design.md` schema — class + sequence by default; how
-  `fluency feature` scaffolds the dir + branch (stage 2).
-- The `.fluency/features/<feature>/sessions/<name>.md` schema — as refined above (no
+- The `.fluencyloop/constitution.md` template (stage 1, maintainer, project-level).
+- The `.fluencyloop/features/<feature>/design.md` schema — class + sequence by default; how
+  `fluencyloop feature` scaffolds the dir + branch (stage 2).
+- The `.fluencyloop/features/<feature>/sessions/<name>.md` schema — as refined above (no
   `commits:` header; optional `design:` and `constitution:` fields), plus the
   slice-boundary capture flow (stage 3) and branch-based PR-view assembly (stage 4).
-- The `fluency feature` and `fluency backfill` commands (scripts layer).
+- The `fluencyloop feature` and `fluencyloop backfill` commands (scripts layer).
 
 ## Standing principles
 

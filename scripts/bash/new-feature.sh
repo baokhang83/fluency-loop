@@ -27,7 +27,7 @@ require_fluency
 INTENT="${ARGS[*]:-}"
 INTENT="$(printf '%s' "$INTENT" | sed -E 's/^[[:space:]]+|[[:space:]]+$//g')"
 if [ -z "$INTENT" ]; then
-    echo "Error: a feature needs an intent, e.g. fluency feature \"adding rate limiting\"" >&2
+    echo "Error: a feature needs an intent, e.g. fluencyloop feature \"adding rate limiting\"" >&2
     exit 1
 fi
 

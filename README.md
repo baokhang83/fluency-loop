@@ -6,7 +6,7 @@ The code and your fluency in it are produced together, or not at all. See
 [MANIFESTO.md](MANIFESTO.md) for the why.
 
 FluencyLoop is a four-stage workflow, delivered as coding-agent **skills** + deterministic
-**bash scripts** + committed **state** in `.fluency/` — the same three-layer shape as
+**bash scripts** + committed **state** in `.fluencyloop/` — the same three-layer shape as
 SpecKit, aimed at the opposite point on the timeline (during & after code, not before).
 
 ```
@@ -26,7 +26,7 @@ git clone https://github.com/baokhang83/fluency-loop && cd fluency-loop
 ./install.sh
 ```
 
-This copies the tool into `~/.fluencyloop/lib`, puts the `fluency` CLI on your PATH
+This copies the tool into `~/.fluencyloop/lib`, puts the `fluencyloop` CLI on your PATH
 (`~/.local/bin`), and installs the interactive skills **user-wide** (`~/.claude/skills`) so
 your coding agent sees them in every project. (`./install.sh --no-skills` skips the last
 step; `--bin-dir <dir>` changes where the CLI is linked.)
@@ -34,15 +34,15 @@ step; `--bin-dir <dir>` changes where the CLI is linked.)
 **2. Once per project** — inside a repo you want to use FluencyLoop on:
 
 ```bash
-fluency init
+fluencyloop init
 ```
 
-This scaffolds that repo's `.fluency/` state (scripts, templates, a constitution stub) and
+This scaffolds that repo's `.fluencyloop/` state (scripts, templates, a constitution stub) and
 adds the calibration `.gitignore` guard. Skills are already user-wide, so they are *not*
 copied into the repo — unless you want contributors to get them on clone, in which case:
 
 ```bash
-fluency init --vendor-skills   # commits the skills into the repo's .claude/skills
+fluencyloop init --vendor-skills   # commits the skills into the repo's .claude/skills
 ```
 
 > Distribution roadmap: today it's clone + `install.sh`. Packaging the skills as a Claude
@@ -53,12 +53,12 @@ fluency init --vendor-skills   # commits the skills into the repo's .claude/skil
 
 | Stage | Slash command (in your agent) | Or the CLI directly |
 |-------|-------------------------------|---------------------|
-| 1. Constitution *(maintainer, once)* | `/fluency-constitution` | — |
-| 2–3. Feature: design → build + teach *(per feature)* | `/fluency-feature` | `fluency feature "<intent>"` |
-| 4. Review *(per feature)* | `/fluency-review` | `fluency review` |
-| Safety net *(post-merge)* | `/fluency-backfill` | — |
+| 1. Constitution *(maintainer, once)* | `/fluencyloop-constitution` | — |
+| 2–3. Feature: design → build + teach *(per feature)* | `/fluencyloop-feature` | `fluencyloop feature "<intent>"` |
+| 4. Review *(per feature)* | `/fluencyloop-review` | `fluencyloop review` |
+| Safety net *(post-merge)* | `/fluencyloop-backfill` | — |
 
-You invoke a stage two ways: **type the slash command** (e.g. `/fluency-feature`), or just
+You invoke a stage two ways: **type the slash command** (e.g. `/fluencyloop-feature`), or just
 **describe the task** ("start a feature to add rate limiting") and your agent triggers the
 matching skill from its description. Both run the same skill.
 
@@ -73,7 +73,7 @@ left to the model.
 install.sh                  machine install: CLI on PATH + skills user-wide
 fluency                     CLI dispatcher (init / feature / session / review)
 scripts/bash/               deterministic plumbing (common, init, new-feature, …)
-templates/                  .fluency state templates (constitution, design, session)
+templates/                  .fluencyloop state templates (constitution, design, session)
 skills/                     the interactive skills (installed into ~/.claude/skills)
 MANIFESTO.md                the why
 ```

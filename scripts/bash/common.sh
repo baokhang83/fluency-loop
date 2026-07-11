@@ -11,17 +11,17 @@ repo_root() {
     git rev-parse --show-toplevel 2>/dev/null || true
 }
 
-# Absolute path to the project's .fluency directory (state lives here).
+# Absolute path to the project's .fluencyloop directory (state lives here).
 fluency_dir() {
     local root; root="$(repo_root)"
-    [ -n "$root" ] && printf '%s/.fluency' "$root"
+    [ -n "$root" ] && printf '%s/.fluencyloop' "$root"
 }
 
 # Fail unless FluencyLoop has been initialised in this repo.
 require_fluency() {
     local dir; dir="$(fluency_dir)"
     if [ -z "$dir" ] || [ ! -d "$dir" ]; then
-        echo "Error: FluencyLoop is not initialised here. Run 'fluency init' first." >&2
+        echo "Error: FluencyLoop is not initialised here. Run 'fluencyloop init' first." >&2
         exit 1
     fi
 }

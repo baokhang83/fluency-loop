@@ -1,6 +1,6 @@
 ---
-name: fluency
-description: 'FluencyLoop — stay fluent in code as AI writes it. Router/overview for the four-stage workflow (constitution → design → build+teach → review) plus post-merge backfill. Use when the user mentions FluencyLoop, "fluency", the .fluency/ directory, or wants to set up / understand the workflow but hasn''t named a specific stage.'
+name: fluencyloop
+description: 'FluencyLoop — stay fluent in code as AI writes it. Router/overview for the four-stage workflow (constitution → design → build+teach → review) plus post-merge backfill. Use when the user mentions FluencyLoop, "fluency", the .fluencyloop/ directory, or wants to set up / understand the workflow but hasn''t named a specific stage.'
 ---
 
 # FluencyLoop
@@ -22,21 +22,21 @@ constitution          →  design      →  build (teach)   →  review
 
 | The user wants to…                                   | Skill                  |
 |------------------------------------------------------|------------------------|
-| Set up the project / write its principles            | **fluency-constitution** |
-| Start building something, stay fluent as they go     | **fluency-feature**    |
-| Prepare a PR / summarise a feature for a reviewer     | **fluency-review**     |
-| Document work that shipped without the loop           | **fluency-backfill**   |
+| Set up the project / write its principles            | **fluencyloop-constitution** |
+| Start building something, stay fluent as they go     | **fluencyloop-feature**    |
+| Prepare a PR / summarise a feature for a reviewer     | **fluencyloop-review**     |
+| Document work that shipped without the loop           | **fluencyloop-backfill**   |
 
-If the user just says "fluency" or "set up FluencyLoop" and `.fluency/` does not exist yet,
-start with **fluency-constitution** (it runs `fluency init` for you).
+If the user just says "fluency" or "set up FluencyLoop" and `.fluencyloop/` does not exist yet,
+start with **fluencyloop-constitution** (it runs `fluencyloop init` for you).
 
 ## Initialise a project
 
 ```bash
-<fluency-dist>/scripts/bash/init.sh   # scaffolds .fluency/ and installs these skills
+<fluencyloop-dist>/scripts/bash/init.sh   # scaffolds .fluencyloop/ and installs these skills
 ```
 
-This creates `.fluency/` (scripts, templates, constitution stub) and copies the skills into
+This creates `.fluencyloop/` (scripts, templates, constitution stub) and copies the skills into
 `.claude/skills`. A feature is a branch (`feature/<slug>`); sessions are committed journals;
 the per-developer calibration profile lives globally in `~/.fluencyloop/` and is never
 committed.

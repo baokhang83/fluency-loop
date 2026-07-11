@@ -1,9 +1,9 @@
 ---
-name: fluency-feature
-description: 'FluencyLoop Stage 2–3. Declare a feature and build it while staying fluent: creates the feature branch + design diagrams, then builds in slices, teaching the why of each real decision at the slice boundary and journaling it. Use when starting a new unit of work in a repo that has a .fluency/ directory, or when the user says "fluency feature", "start a feature", or describes something they want to build with FluencyLoop.'
+name: fluencyloop-feature
+description: 'FluencyLoop Stage 2–3. Declare a feature and build it while staying fluent: creates the feature branch + design diagrams, then builds in slices, teaching the why of each real decision at the slice boundary and journaling it. Use when starting a new unit of work in a repo that has a .fluencyloop/ directory, or when the user says "fluencyloop feature", "start a feature", or describes something they want to build with FluencyLoop.'
 ---
 
-# fluency-feature — declare a feature, build it fluent
+# fluencyloop-feature — declare a feature, build it fluent
 
 This is the contributor's entry point. A **feature is a branch** (`feature/<slug>`); it owns
 the design diagrams and the session journals. You will: (1) declare the feature, (2) sketch
@@ -12,8 +12,8 @@ each slice boundary. Never gate; never lecture. Keep the developer the author.
 
 ## 0. Preconditions
 
-Confirm `.fluency/` exists (run `.fluency/scripts/common.sh` context). If it does not, tell
-the user to run `fluency-constitution` / `fluency init` first, and stop.
+Confirm `.fluencyloop/` exists (run `.fluencyloop/scripts/common.sh` context). If it does not, tell
+the user to run `fluencyloop-constitution` / `fluencyloop init` first, and stop.
 
 Read the calibration profile if present: `~/.fluencyloop/calibration.md`. It is
 domain-dimensioned (e.g. "senior Java, reactive is new"). Use it to decide what to skip and
@@ -25,7 +25,7 @@ to skip — never block on it.
 Take the user's one-line intent. Run:
 
 ```bash
-.fluency/scripts/new-feature.sh --json "<intent>"
+.fluencyloop/scripts/new-feature.sh --json "<intent>"
 ```
 
 This creates the `feature/<slug>` branch (switching to it), the feature dir, and a
@@ -41,7 +41,7 @@ Open the `design.md` stub. Draft the two defaults from the intent and the codeba
 Keep both Mermaid blocks **top-level** (never nested inside another code fence) so GitHub
 renders them. Add an interaction/flow view only if it earns its place. Show the diagrams to
 the user, refine once with their input, and write them into `design.md`. Check them against
-the constitution (`.fluency/constitution.md`) — if a shape conflicts with a principle, say
+the constitution (`.fluencyloop/constitution.md`) — if a shape conflicts with a principle, say
 so plainly; do not silently "fix" it.
 
 Do not over-invest here: the design is a shape to build against, not a spec to ratify.
@@ -62,7 +62,7 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
 3. **Journal it.** Open (or create) the slice's session file:
 
    ```bash
-   .fluency/scripts/new-session.sh --json --slug "<feature-slug>" "<slice intent>"
+   .fluencyloop/scripts/new-session.sh --json --slug "<feature-slug>" "<slice intent>"
    ```
 
    Append one `## Decision:` block per decision, using the schema in the session template:
@@ -77,7 +77,7 @@ developer never writes it by hand.
 
 ## 4. Hand off to review
 
-When the feature is ready for a PR, tell the user they can run **fluency-review** to
+When the feature is ready for a PR, tell the user they can run **fluencyloop-review** to
 assemble the reviewer-facing view from the sessions. Do not open the PR yourself unless
 asked.
 

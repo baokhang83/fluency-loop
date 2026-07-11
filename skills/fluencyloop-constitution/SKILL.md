@@ -1,9 +1,9 @@
 ---
-name: fluency-constitution
-description: 'FluencyLoop Stage 1. Author or revise the project constitution (.fluency/constitution.md) — the short, maintainer-owned set of principles every feature is checked against. Runs fluency init if needed. Use when setting up FluencyLoop in a project, or when the user says "fluency constitution", "set up fluency", "write the constitution", or wants to establish project principles.'
+name: fluencyloop-constitution
+description: 'FluencyLoop Stage 1. Author or revise the project constitution (.fluencyloop/constitution.md) — the short, maintainer-owned set of principles every feature is checked against. Runs fluencyloop init if needed. Use when setting up FluencyLoop in a project, or when the user says "fluency constitution", "set up fluency", "write the constitution", or wants to establish project principles.'
 ---
 
-# fluency-constitution — Stage 1, once per project
+# fluencyloop-constitution — Stage 1, once per project
 
 The constitution is the **only** artifact the maintainer owns, written once and revised
 rarely. It is deliberately **short**: a handful of hard constraints and values, each
@@ -12,19 +12,19 @@ governance document.
 
 ## 1. Ensure FluencyLoop is initialised
 
-If `.fluency/` does not exist in the repo, initialise it:
+If `.fluencyloop/` does not exist in the repo, initialise it:
 
 ```bash
-<path-to-fluency-dist>/scripts/bash/init.sh --json   # or: fluency init
+<path-to-fluencyloop-dist>/scripts/bash/init.sh --json   # or: fluencyloop init
 ```
 
-This scaffolds `.fluency/` (scripts, templates, a constitution stub) and installs the
-skills into `.claude/skills`. If `.fluency/constitution.md` already has real content, you
+This scaffolds `.fluencyloop/` (scripts, templates, a constitution stub) and installs the
+skills into `.claude/skills`. If `.fluencyloop/constitution.md` already has real content, you
 are **revising** — read it first and preserve what still holds.
 
 ## 2. Elicit principles — one at a time
 
-Open `.fluency/constitution.md` (from `templates/constitution.md`). Interview the
+Open `.fluencyloop/constitution.md` (from `templates/constitution.md`). Interview the
 maintainer **one question at a time** (like a focused clarify loop), aiming for **3–5
 principles total** — resist more. For each principle, capture:
 
@@ -42,7 +42,7 @@ constrain, so contributors don't over-ask it.
 
 ## 3. Write and confirm
 
-Write the principles into `.fluency/constitution.md`, numbered `§1, §2, …` (features will
+Write the principles into `.fluencyloop/constitution.md`, numbered `§1, §2, …` (features will
 cite these numbers in their `constitution:` fields). Fill `Project` and `Ratified` (today).
 Show the result and confirm. Commit only if the user asks.
 
