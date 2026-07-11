@@ -335,29 +335,33 @@ plus one block per decision. Human-readable first, script-parseable second.
 ```markdown
 # Session: wiring the Redis rate-limit store
 
-intent:   protect the gateway from bursty clients without hurting p99
-started:  2026-07-10
+- **intent:** protect the gateway from bursty clients without hurting p99
+- **started:** 2026-07-10
 
 ---
 
 ## Decision: token-bucket over sliding-window
 
-where:        gateway/RateLimiter.java
-why:          burst tolerance matters here — clients spike legitimately at minute
-              boundaries; token-bucket absorbs that, sliding-window rejects it
-alternative:  sliding-window log — rejected: smoother but no burst headroom
-design:       ../design.md#sequence-incoming-request
-constitution: §2 (services must tolerate legitimate burst traffic)
-trust:        ⚠ algorithm choice not independently verified
+- **where:** `gateway/RateLimiter.java`
+- **why:** burst tolerance matters here — clients spike legitimately at minute
+  boundaries; token-bucket absorbs that, sliding-window rejects it
+- **alternative:** sliding-window log — rejected: smoother but no burst headroom
+- **design:** ../design.md#sequence-incoming-request
+- **constitution:** §2 (services must tolerate legitimate burst traffic)
+- **trust:** ⚠ algorithm choice not independently verified
 
 ## Decision: rate-limit state in Redis, not in-memory
 
-where:        gateway/RedisRateLimitStore.java
-why:          the gateway runs multi-instance; in-memory state would let a client
-              exceed the limit by hitting different instances
-alternative:  in-memory Map — rejected: correct only for single-instance
-trust:        ✓ verified — multi-instance failure mode understood
+- **where:** `gateway/RedisRateLimitStore.java`
+- **why:** the gateway runs multi-instance; in-memory state would let a client
+  exceed the limit by hitting different instances
+- **alternative:** in-memory Map — rejected: correct only for single-instance
+- **trust:** ✓ verified — multi-instance failure mode understood
 ```
+
+Each field is a **bullet** — so it renders one-per-line as real Markdown. Plain
+`key: value` lines look fine in a raw view but collapse into a single paragraph once
+rendered, which is why the schema uses list items.
 
 Why each field exists:
 

@@ -91,12 +91,13 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    .fluencyloop/scripts/new-session.sh --json --slug "<feature-slug>" "<slice intent>"
    ```
 
-   Append one `## Decision:` block per decision, using the schema in the session template:
-   `where:` (file/area, never a line number), `why:` (the rationale you just taught),
-   `alternative:` (the rejected option and why), optional `design:` / `constitution:`
-   anchors, and `trust:` (`✓` verified / `⚠` not independently verified — about the
-   **decision**, never the person). Remove the template's example block and HTML comment
-   the first time you write a real decision.
+   Append one `## Decision:` block per decision, using the schema in the session template.
+   **Each field is a Markdown bullet** (`- **where:** …`, `- **why:** …`, `- **alternative:**
+   …`, optional `- **design:**` / `- **constitution:**`, `- **trust:**`) — plain `key: value`
+   lines collapse into one paragraph when the `.md` is rendered, so always use bullets.
+   `where:` is a file/area, never a line number; `trust:` is `✓` verified / `⚠` not
+   independently verified — about the **decision**, never the person. Remove the template's
+   example block and HTML comment the first time you write a real decision.
 
 Repeat per slice until the feature is built. The journal accretes as a byproduct — the
 developer never writes it by hand.
