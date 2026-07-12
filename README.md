@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/github/license/baokhang83/fluencyloop)](LICENSE)
 [![Top language](https://img.shields.io/github/languages/top/baokhang83/fluencyloop)](https://github.com/baokhang83/fluencyloop)
-[![Status: alpha](https://img.shields.io/badge/status-alpha%20%C2%B7%20dogfooding-orange)](#distribution-roadmap)
+[![Status: alpha](https://img.shields.io/badge/status-alpha%20%C2%B7-orange)](#distribution-roadmap)
 [![Stars](https://img.shields.io/github/stars/baokhang83/fluencyloop?style=social)](https://github.com/baokhang83/fluencyloop/stargazers)
 
 **Stay fluent in the code your AI agent writes.** FluencyLoop is a four-stage workflow that
@@ -82,12 +82,12 @@ because a feature *is* its branch. Shipped something without the loop? `fluencyl
 
 ## Use it
 
-| Stage | Slash command (in your agent) | Or the CLI directly |
+| Stage | Slash command (in your agent) |
 |-------|-------------------------------|---------------------|
-| 1. Constitution *(maintainer, once)* | `/fluencyloop-constitution` | — |
-| 2–3. Feature: design → build + teach *(per feature)* | `/fluencyloop-feature` | `fluencyloop feature "<intent>"` |
-| 4. Review *(per feature)* | `/fluencyloop-review` | `fluencyloop review` |
-| Safety net *(post-merge)* | `/fluencyloop-backfill` | — |
+| 1. Constitution *(maintainer, once)* | `/fluencyloop-constitution` |
+| 2–3. Feature: design → build + teach *(per feature)* | `/fluencyloop-feature` |
+| 4. Review *(per feature)* | `/fluencyloop-review` |
+| Safety net *(post-merge)* | `/fluencyloop-backfill` |
 
 You invoke a stage two ways: **type the slash command** (e.g. `/fluencyloop-feature`), or just
 **describe the task** ("start a feature to add rate limiting") and your agent triggers the
@@ -137,7 +137,7 @@ actively dogfooded, so expect rough edges and fast-moving changes.
 <a id="distribution-roadmap"></a>
 > **Distribution roadmap:** today it's clone + `install.sh`. Packaging the skills as a Claude
 > Code **plugin/marketplace** entry (one-click install for others) and publishing the CLI
-> (homebrew/npm) are the next distribution steps — not required to use or dogfood it.
+> (homebrew/npm) are the next distribution steps — not required to use.
 
 ## License
 
@@ -146,4 +146,4 @@ actively dogfooded, so expect rough edges and fast-moving changes.
 ---
 
 ⭐ **If the "fluency *during* code" framing resonates, star the repo** — it's the clearest
-signal this direction is worth pushing on. Then read the [MANIFESTO](MANIFESTO.md).
+signal this direction is worth pushing on.
