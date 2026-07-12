@@ -51,8 +51,12 @@ Draft the two defaults from the intent and the codebase:
 **self-contained Artifact** (a web page the user opens in a browser tab and actually sees) —
 load the `artifact-design` skill first. The Artifact CSP blocks external scripts, so you
 **cannot** pull Mermaid from a CDN: render the diagrams as **inline SVG** (or clean HTML/CSS)
-in the page itself, self-contained. Then walk the user through what they're looking at and
-invite reactions — this is a conversation, not a handoff.
+in the page itself, self-contained. Do **not** inline a minified Mermaid/JS bundle to render
+client-side — those bundles carry lone surrogate/escape sequences that make the Artifact
+deploy fail. **Byte-check before publishing:** the file must be valid UTF-8 with no lone
+surrogates / `U+FFFD` and must JSON-round-trip (prefer pure ASCII — HTML entities over literal
+dashes/box-drawing); publish only if the check is clean, or the deploy bounces. Then walk the
+user through what they're looking at and invite reactions — this is a conversation, not a handoff.
 
 Persist the same diagrams as **Mermaid** in `design.md` (blocks **top-level**, never nested
 in another fence, so GitHub renders them) — that's the durable, committed copy. The Artifact
@@ -76,6 +80,12 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    as an exchange — **not** by writing the journal and telling the user to go read it (that's
    the *after*). For each decision:
    - Explain the why and the rejected alternative in the chat, right now.
+   - **Anchor it to the rendered design diagram** — point back to the Artifact from §2 and name
+     the exact shape the decision concerns, so the *why* lands on something they can see, not
+     just prose. If the decision changed the design, re-render and re-check the diagram.
+   - When a slice carries several decisions to sign off at once, you may confirm them
+     **interactively, one tab per decision** (`AskUserQuestion`) rather than in a wall of text —
+     but the live teaching, not the prompt, stays the point.
    - **Pause and check understanding** — ask if it lands, and explicitly offer to go deeper
      ("want me to unpack how X works, or is this enough to trust it?"). Then *wait* for the
      answer before moving on. A monologue that ends in "see the journal" is the failure mode.
