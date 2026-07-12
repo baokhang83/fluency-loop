@@ -1,15 +1,20 @@
 ---
 name: fluencyloop-backfill
-description: 'FluencyLoop safety net. Reconstruct journal entries for work that shipped without going through the loop — reads a merged diff, drafts a feature + session with decision blocks, marks every entry trust: ⚠ unverified for human review. Use post-merge, or when the user says "fluencyloop backfill", "document this PR after the fact", or "we skipped the loop on this one".'
+description: 'FluencyLoop safety net. Reconstruct journal entries for work that shipped without going through the loop — reads a merged diff, drafts a feature + session with decision blocks, renders a fluency briefing that maps each decision onto the design diagrams, then confirms them with the human one decision at a time. Marks every entry trust: ⚠ unverified until confirmed. Use post-merge, or when the user says "fluencyloop backfill", "document this PR after the fact", or "we skipped the loop on this one".'
 ---
 
-# fluencyloop-backfill — reconstruct-and-flag, never gate
+# fluencyloop-backfill — reconstruct, make fluent, then flag
 
 FluencyLoop never blocks a merge. The safety net for work that skipped the loop is
 **post-merge backfill**: it gives ad-hoc work a home retroactively. Backfilled rationale had
 **no real-time teaching to force honesty**, so it is the entry most at risk of plausible
-post-hoc fiction — which is exactly why every backfilled entry is stamped `trust: ⚠
-unverified` and **must pass a human before it lands**.
+post-hoc fiction — which is why every backfilled entry is stamped `trust: ⚠ unverified` and
+**must pass a human before it lands**.
+
+Backfill is not just bookkeeping. Its job is to **make the human fluent again** in the
+components the work touched — the fluency the missing real-time loop never gave them. So you
+don't just draft and ask "ok?"; you *show them the shapes, rendered,* map each decision onto
+them, and confirm decision-by-decision.
 
 ## 1. Scope the work
 
@@ -23,34 +28,91 @@ git diff <base>..<ref>
 
 ## 2. Reconstruct — carefully
 
-Read the diff and history and infer the **decisions that were actually made** — the genuine
-forks, not every line. For each, draft a `## Decision:` block:
+Read the diff, the history, and the code (plus any ADR/spec/notes the work cites) and infer
+the **decisions that were actually made** — the genuine forks, not every line. For each,
+draft a `## Decision:` block:
 
 - `where:` — the file/area it lives in.
-- `why:` — your best reconstruction of the rationale **from the code**. Do not embellish
-  beyond what the diff supports.
+- `why:` — your best reconstruction of the rationale **from the code and its cited sources**.
+  Do not embellish beyond what they support.
 - `alternative:` — the plausible rejected option, if the code implies one; otherwise say the
   alternative is unknown rather than inventing a tidy story.
-- `trust: ⚠ unverified — backfilled` — **always**, with no exceptions.
+- `constitution:` — the principle it serves, by the **current** constitution's numbering (if a
+  cited source uses older numbers, map to current and note the drift for the human to confirm).
+- `trust: ⚠ unverified — backfilled` — **always**, with no exceptions, at this stage.
 
-Create the feature + session to hold them:
+Create the feature + session to hold them, then write the drafted blocks into the session file:
 
 ```bash
 .fluencyloop/scripts/new-feature.sh --json "<inferred feature intent>"
 .fluencyloop/scripts/new-session.sh --json --slug "<feature-slug>" "<inferred slice intent>"
 ```
 
-Then write the drafted decision blocks into the session file.
+Sketch the feature's `design.md` diagrams (class + sequence) from the code you just read —
+these are what the briefing renders.
 
-## 3. Human review — required
+## 3. Make the reviewer fluent — a rendered briefing
 
-Present every drafted entry to the user and ask them to confirm, correct, or delete each
-`why`/`alternative` before anything is committed. Where they confirm from real knowledge,
-they may upgrade `⚠` to `✓`. Nothing lands unreviewed.
+Reconstruction on its own asks the human to rubber-stamp prose. Instead, show them the
+components, **rendered**, with each decision tied to what it touches. Load the
+`artifact-design` skill, then publish a **self-contained Artifact** the user opens in a browser:
+
+- **Render the diagrams, don't link source.** The Artifact CSP blocks external scripts, so you
+  **cannot** pull Mermaid (or any lib) from a CDN. Render the design.md diagrams as **inline
+  SVG** (hand-authored) in the page. Do **not** inline a minified Mermaid/JS bundle to render
+  client-side — those bundles carry lone surrogate/escape sequences that fail the Artifact
+  deploy (see byte-check below). The committed `design.md` keeps the Mermaid as the canonical
+  source; the Artifact is the rendered view.
+- **Map every decision onto the diagram.** For each decision, name the exact nodes it concerns
+  and make the link visible (e.g. hovering a decision highlights those nodes). A decision the
+  human can't see located on a rendered diagram teaches nothing.
+- **Teach, briefly.** One or two plain sentences per component bringing them up to date on what
+  it does and why — this is the fluency the real-time loop would have given.
+
+**Byte-check before every publish** — the Artifact deploy rejects content with invalid or
+unpaired escape sequences (lone surrogates / `U+FFFD`). Validate the file first and only
+publish if clean:
+
+```bash
+python3 - "$FILE" <<'PY'
+import sys
+raw=open(sys.argv[1],'rb').read(); txt=raw.decode('utf-8','surrogatepass')
+import json
+lone=sum(1 for c in txt if 0xD800<=ord(c)<=0xDFFF); repl=txt.count('�')
+try: json.dumps(txt); ok=True
+except Exception: ok=False
+na=sum(1 for b in raw if b>127)
+print(f"non-ascii={na} lone-surrogates={lone} FFFD={repl} json-roundtrip={ok}")
+print("PUBLISH-SAFE" if (lone==0 and repl==0 and ok) else "DIRTY — do not publish")
+PY
+```
+
+Prefer pure ASCII (HTML entities over literal box-drawing/dashes). If it reports `DIRTY`,
+sanitize (or drop the offending inlined content) before calling the Artifact tool.
+
+Give the user the rendered URL and let them read before you ask anything.
+
+## 4. Confirm — interactively, one decision at a time
+
+Do **not** ask for a blanket "looks good." Confirm **decision by decision**, using an
+interactive prompt with **one tab per decision** (the `AskUserQuestion` tool — up to 4 per
+call; batch further decisions in follow-up calls). For each decision offer:
+
+- **Confirm → ✓** — they can vouch for it firsthand; upgrade `trust: ⚠` to `✓`.
+- **Keep as ⚠** — accurate enough, but they can't personally verify it; leave it flagged.
+- **Needs fixing** — rationale is off; capture their correction (the free-text option) and rewrite.
+- **Delete** — not a real decision; drop it.
+
+Apply their verdicts to the session file (flip trust markers, rewrite corrected `why`/
+`alternative`, resolve any noted constitution-numbering drift), reconcile the design.md
+backfill banner, and only then commit. Nothing lands unreviewed.
 
 ## Rules
 
-- **Every backfilled entry is `trust: ⚠` until a human says otherwise.**
+- **Every backfilled entry is `trust: ⚠` until a human confirms it.** The interactive
+  confirmation is the gate on the *marker*, never on the merge.
+- **Show, then ask.** Render the diagrams and map decisions onto them before requesting sign-off.
+- **Byte-check every Artifact before publishing** — never ship content that fails the check.
 - **Reconstruct, don't fabricate.** "Alternative unknown" is a truthful entry; a plausible
   invented tradeoff is not.
 - **Still never gates.** Backfill documents after the fact; it does not block anything.
