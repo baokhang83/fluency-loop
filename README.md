@@ -36,7 +36,7 @@ Nothing gates a merge. Work that skips the loop is caught **after** merge by `ba
 ## Teaches to your level
 
 FluencyLoop doesn't lecture at a fixed depth. Before a feature touches unfamiliar ground it
-**asks** — *"familiar with `plugin.xml` and Mojo objects?"* — then keeps re-estimating what you
+**asks** — *"For the new Maven plugin, are you familiar with `plugin.xml` and Mojo objects?"* — then keeps re-estimating what you
 know from how you respond: terse on solid ground, deeper where it's shaky. What it learns is
 persisted to a **per-developer knowledge base** in `~/.fluencyloop/` (global, never committed),
 so the next feature starts already calibrated instead of cold — and the fluency compounds. Your
