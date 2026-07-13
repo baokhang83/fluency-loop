@@ -110,15 +110,6 @@ one-question-at-a-time constitution authoring). The **scripts** carry the determ
 plumbing (branches, files, PR-view assembly) so the journal is reliable rather than
 left to the model.
 
-## When to use it
-
-|  | Spec-first (e.g. SpecKit) | FluencyLoop |
-|--|--|--|
-| When it runs | *before* code — plan, then generate | *during & after* code — build, then stay fluent |
-| Optimizes for | a clear specification up front | your fluency in what actually shipped |
-| Merge posture | plan-driven | nothing gates a merge; `backfill` catches skips after |
-| Main artifact | a specification | a session journal + a self-assembling PR view |
-
 ## Layout
 
 ```
