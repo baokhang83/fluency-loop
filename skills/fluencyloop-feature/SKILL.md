@@ -13,7 +13,7 @@ each slice boundary. Never gate; never lecture. Keep the developer the author.
 ## 0. Preconditions
 
 Confirm `.fluencyloop/` exists (run `.fluencyloop/scripts/common.sh` context). If it does not, tell
-the user to run `fluencyloop-constitution` / `fluencyloop init` first, and stop.
+the user to run `fluencyloop init` first, and stop.
 
 **Read the loop state.** If `.fluencyloop/state.json` exists, read it *first* — it is the loop's
 single source of truth for the active feature (`feature` slug, `branch`, `stage`, `last_session`,
@@ -91,6 +91,17 @@ Refine once with the user's input. Check the design against the constitution —
 another file, e.g. `.specify/memory/constitution.md`), read *that* file for the real
 principles. If a shape conflicts with a principle, say so plainly; do not silently "fix" it.
 
+**Birth the constitution if it's still the empty stub.** If it has no real principles yet and no
+plan ran to seed it, this first feature is the constitution's **guaranteed backstop birth**
+(planning is optional; this is not). From this feature's intent and the design conversation you
+just had, draft **3–5 initial principles** — the checkable constraints and stances this work
+evidences, each a short **title** + the **non-negotiable** + the **why** (the failure it
+prevents). Show them, confirm, and write them into `## Principles` numbered `§1, §2, …` (decisions
+will cite these numbers). Don't author cold or pad to a count — only what the work evidences; and
+if a real constitution already lives elsewhere (a `Source of truth:` pointer / SpecKit's
+`.specify/memory/constitution.md`), amend that in place rather than forking one. After birth it
+grows by harvest (§3).
+
 Do not over-invest here: the design is a shape to build against, not a spec to ratify.
 
 ## 3. Build in slices (Stage 3) — teach at the boundary
@@ -164,6 +175,17 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    *built and maintained* — so the next slice, session, and feature start already calibrated
    instead of cold. Keep it global and **uncommitted**; never write person-specific knowledge
    into the repo.
+
+5. **Harvest to the constitution** *(the growth beat — now the only ongoing way principles are
+   added, so don't let it stay dormant)*. When a decision's *why* is a **repeatable stance** — a
+   rule you'd apply again, not a one-off (*"no synchronous cross-service calls in the request
+   path"*, *"config is validated at load, never at use"*) — **offer to promote it to a
+   constitution principle**. Be **assertive**: name the candidate and ask outright (*"that reads
+   like a standing rule, not a one-off — promote it to §N of the constitution?"*), rather than
+   waiting to be asked. On a yes, append it to `docs/fluencyloop/constitution.md` under
+   `## Principles` as the next `§N` (short title + the non-negotiable + the why), and cite that
+   `§N` in the decision's `constitution:` field. On a no, leave it — a one-off is not a principle.
+   This is how the constitution *grows*: harvested from real decisions, never a cold authoring pass.
 
 Repeat per slice until the feature is built. The journal accretes as a byproduct — the
 developer never writes it by hand.

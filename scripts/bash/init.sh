@@ -87,7 +87,7 @@ else
     echo "  state:        $FLUENCY (scripts + templates)"
     echo "  docs:         $DOCS (constitution, designs, session journals)"
     $AUTO_REMOTE_SET && echo "  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)"
-    $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (stub — run fluencyloop-constitution to fill it)"
+    $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (empty — written from your first plan or feature)"
     if [ -n "$SKILLS_DEST" ]; then
         echo "  skills:       $SKILLS_DEST (vendored into repo)"
     else

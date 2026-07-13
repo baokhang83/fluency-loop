@@ -6,7 +6,7 @@
 [![Top language](https://img.shields.io/github/languages/top/baokhang83/fluencyloop)](https://github.com/baokhang83/fluencyloop)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-orange)](#distribution-roadmap)
 
-**Stay fluent in the code your AI agent writes.** FluencyLoop is a four-stage workflow that
+**Stay fluent in the code your AI agent writes.** FluencyLoop is a per-feature loop that
 teaches you the *why* of each change as it ships — so the agent writes the code without you
 losing the plot.
 
@@ -19,13 +19,23 @@ FluencyLoop is delivered as coding-agent **skills** + deterministic **bash scrip
 committed **docs** in `docs/fluencyloop/` (the constitution, per-feature designs, and session
 journals; the tool's own machine state stays in `.fluencyloop/`).
 
+The core is a **per-feature loop**, with an optional planning step in front for big chunks:
+
 ```
-ONCE, PER PROJECT        REPEATS, PER FEATURE (contributor-driven)
-constitution          →  design      →  build (teach)   →  review
-(maintainer)             diagrams        session journal    PR view assembles itself
+[ plan ]  →  design  →  build (teach)  →  review
 ```
 
-Nothing gates a merge. Work that skips the loop is caught **after** merge by `backfill`.
+- **plan** — *optional*, only when a chunk is too big for one feature: architecture + roadmap,
+  broken into feature-sized tasks.
+- **design** — the shapes, rendered so you actually *see* them before any code.
+- **build (teach)** — the agent writes it; you get taught the *why* of each real decision at the
+  slice boundary, journaled as it goes.
+- **review** — the reviewer view assembles itself from the journal, because a feature *is* its branch.
+
+The **constitution** (checkable project principles) is woven through the loop, not a stage you
+author cold: it's **born from your first plan or feature** and grows as later features **harvest**
+principles from real decisions. Nothing gates a merge — work that skips the loop is caught
+**after** merge by `backfill`.
 
 **Requires:** a coding agent ([Claude Code](https://claude.com/claude-code)) plus `bash` and
 `git`. The `fluencyloop` CLI runs standalone; the interactive skills need the agent.
@@ -90,13 +100,12 @@ because a feature *is* its branch. Shipped something without the loop? `fluencyl
 
 ## Use it
 
-| Stage | Slash command (in your agent) |
-|-------|-------------------------------|
-| 1. Constitution *(maintainer, once)* | `/fluencyloop-constitution` |
-| Plan: architecture + roadmap *(optional, for large chunks)* | `/fluencyloop-plan` |
-| 2–3. Feature: design → build + teach *(per feature)* | `/fluencyloop-feature` |
-| 4. Review *(per feature)* | `/fluencyloop-review` |
-| Safety net *(post-merge)* | `/fluencyloop-backfill` |
+| Step | Slash command (in your agent) |
+|------|-------------------------------|
+| Plan a big chunk — architecture + roadmap *(optional)* | `/fluencyloop-plan` |
+| Build a feature — design → build + teach *(per feature)* | `/fluencyloop-feature` |
+| Review — the PR view assembles itself *(per feature)* | `/fluencyloop-review` |
+| Backfill — document work that skipped the loop *(post-merge)* | `/fluencyloop-backfill` |
 
 You invoke a stage two ways: **type the slash command** (e.g. `/fluencyloop-feature`), or just
 **describe the task** ("start a feature to add rate limiting") and your agent triggers the

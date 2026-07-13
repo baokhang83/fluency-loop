@@ -15,11 +15,12 @@ do not over-invest. Keep the developer the architect.
 ## 0. Preconditions
 
 Confirm `.fluencyloop/` exists (`.fluencyloop/scripts/common.sh` context). If not, tell the user
-to run `fluencyloop-constitution` / `fluencyloop init` first, and stop.
+to run `fluencyloop init` first, and stop.
 
 **Read the constitution up front** — `docs/fluencyloop/constitution.md`, and **if it's a pointer**
 (a `Source of truth:` line naming another file, e.g. `.specify/memory/constitution.md`), read
-*that* file. The architecture you design in §2 is checked against it in §2/§5.
+*that* file. The architecture you design in §2 is checked against it. If it's still the **empty
+stub**, this plan is where the constitution is born — see §5.
 
 **Load the learner's knowledge base** — `~/.fluencyloop/calibration.md` (per-developer, global,
 never committed) — to set the depth you explain architectural choices at. Missing is fine.
@@ -79,7 +80,27 @@ Order the tasks by dependency into `## Roadmap & critical path`:
   finish. Call it out explicitly (`T1 → T3 → T6`) so it's scheduled first and watched. Teach
   *why* it's the critical path — that's an architectural insight worth the developer holding.
 
-## 5. GitHub tickets — offer, ask each plan
+## 5. Seed the constitution — if it's still the empty stub
+
+Read `docs/fluencyloop/constitution.md`. **If it's still the empty stub** (`init` seeds an empty
+`## Principles` — no real principles yet), this plan is the constitution's **birth**: the
+architecture (§2) and roadmap (§4) you just drew are the richest early signal of what this
+codebase values. Draft **3–5 initial principles** from them — the constraints and stances the
+design actually evidences (a boundary the author insisted on, a coupling they refused, a quality
+bar the roadmap protects). Each: a short **title**, the **non-negotiable** in a sentence or two,
+and the **why** (the failure it prevents). Keep them **checkable** (*"no synchronous cross-service
+calls in the request path"*), not platitudes. Show them, confirm, and write them into
+`## Principles` numbered `§1, §2, …` — features cite these numbers.
+
+- **Never author cold or pad to a count** — only principles the architecture evidences; fewer,
+  sharper wins.
+- **If a real constitution already exists** — a `Source of truth:` pointer, or SpecKit's
+  `.specify/memory/constitution.md` — do **not** fork a second one; amend that in place following
+  its own conventions (SpecKit carries a version + a Sync Impact Report).
+- After birth it **grows** as features harvest principles from decisions (fluencyloop-feature §3)
+  — you don't need to make it complete here.
+
+## 6. GitHub tickets — offer, ask each plan
 
 Offer to turn the task breakdown into **GitHub issues under a milestone** (one issue per task
 item; the milestone is the initiative). This is confirmed **per plan** — ask before creating:
@@ -93,12 +114,12 @@ item; the milestone is the initiative). This is confirmed **per plan** — ask b
   write the runnable `gh issue create …` / `gh api …` commands into `## Tickets` for the user to
   run themselves. Never leave the plan blocked on tooling.
 
-## 6. Hand off to the build loop
+## 7. Hand off to the build loop
 
 The plan is the map; each task item is built with **`fluencyloop-feature`** (one branch per
 task, from `main`), in roadmap order along the critical path first. Tell the user that — and that
 `fluencyloop-review` assembles each feature's PR view when it's done. Do not open feature
-branches yourself here; §6 hands off, it doesn't build.
+branches yourself here; §7 hands off, it doesn't build.
 
 ## Rules
 

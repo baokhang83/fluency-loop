@@ -53,8 +53,22 @@ CAL_FILE="${FLUENCYLOOP_HOME:-$HOME/.fluencyloop}/calibration.md"
 CAL_PRESENT=false
 [ -f "$CAL_FILE" ] && CAL_PRESENT=true
 
+# --- constitution: absent / empty stub / a pointer / populated. It's born from the first plan
+# or feature and grows by harvest, so an absent-or-empty constitution is normal, never an error. ---
+CONSTITUTION="$(constitution_path)"
+CONSTITUTION_STATE="absent"
+if [ -n "$CONSTITUTION" ] && [ -f "$CONSTITUTION" ]; then
+    if grep -q "Source of truth:" "$CONSTITUTION" 2>/dev/null; then
+        CONSTITUTION_STATE="pointer"
+    elif grep -qi "none yet" "$CONSTITUTION" 2>/dev/null || ! grep -q "§" "$CONSTITUTION" 2>/dev/null; then
+        CONSTITUTION_STATE="empty"
+    else
+        CONSTITUTION_STATE="present"
+    fi
+fi
+
 if $JSON_MODE; then
-    printf '{"fluency":%s,"branch":"%s","feature":"%s","stage":"%s","base_ref":"%s","last_session":"%s","unjournaled_commits":%s,"calibration":%s}\n' \
+    printf '{"fluency":%s,"branch":"%s","feature":"%s","stage":"%s","base_ref":"%s","last_session":"%s","unjournaled_commits":%s,"calibration":%s,"constitution":"%s"}\n' \
         "$FLUENCY_PRESENT" \
         "$(json_escape "$BRANCH")" \
         "$(json_escape "$FEATURE")" \
@@ -62,7 +76,8 @@ if $JSON_MODE; then
         "$(json_escape "$BASE")" \
         "$(json_escape "$LAST_SESSION")" \
         "$UNJOURNALED" \
-        "$CAL_PRESENT"
+        "$CAL_PRESENT" \
+        "$CONSTITUTION_STATE"
     exit 0
 fi
 
@@ -81,3 +96,8 @@ else
     echo "  ok  no un-journaled drift"
 fi
 echo "  $(mark "$CAL_PRESENT") calibration profile ($CAL_FILE)"
+case "$CONSTITUTION_STATE" in
+    present) echo "  ok  constitution: populated" ;;
+    pointer) echo "  ok  constitution: points to a source of truth" ;;
+    *)       echo "  --  no constitution yet — written from your first plan or feature" ;;
+esac
