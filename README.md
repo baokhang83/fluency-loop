@@ -2,6 +2,7 @@
 
 # FluencyLoop
 
+[![CI](https://github.com/baokhang83/fluencyloop/actions/workflows/ci.yml/badge.svg)](https://github.com/baokhang83/fluencyloop/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/baokhang83/fluencyloop)](LICENSE)
 [![Top language](https://img.shields.io/github/languages/top/baokhang83/fluencyloop)](https://github.com/baokhang83/fluencyloop)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-orange)](#distribution-roadmap)
@@ -123,6 +124,7 @@ VERSION                     the current version (0.2.0); `fluencyloop version` p
 scripts/bash/               deterministic plumbing (common, init, new-feature, …)
 templates/                  .fluencyloop state templates (constitution, design, session)
 skills/                     the interactive skills (installed into ~/.claude/skills)
+tests/                      bats suite for the scripts (run: bats tests)
 MANIFESTO.md                the why
 ```
 
@@ -143,6 +145,11 @@ Questions, ideas, and bug reports are welcome — open an
 [issue](https://github.com/baokhang83/fluencyloop/issues) or start a
 [discussion](https://github.com/baokhang83/fluencyloop/discussions). This is alpha and
 actively dogfooded, so expect rough edges and fast-moving changes.
+
+The scripts switch branches and write files in your repo, so they're tested. CI runs
+[`shellcheck`](https://www.shellcheck.net/) + a [`bats`](https://github.com/bats-core/bats-core)
+suite on every push and PR; run them locally with `shellcheck -x -P SCRIPTDIR scripts/bash/*.sh`
+and `bats tests`.
 
 <a id="distribution-roadmap"></a>
 > **Distribution roadmap:** today it's clone + `install.sh`. Packaging the skills as a Claude
