@@ -22,7 +22,7 @@ journals; the tool's own machine state stays in `.fluencyloop/`).
 
 The core is a **per-feature loop**, with an optional planning step in front for big chunks:
 
-<img width="1000" height="390" alt="image" src="https://github.com/user-attachments/assets/fb5e1855-2ff7-4ff5-bb4b-4d0fc102bd54" />
+<img width="500" height="195" alt="image" src="https://github.com/user-attachments/assets/fb5e1855-2ff7-4ff5-bb4b-4d0fc102bd54" />
 
 - **plan** — *optional*, only when a chunk is too big for one feature: architecture + roadmap,
   broken into feature-sized tasks.
