@@ -1,32 +1,19 @@
 # Constitution
 
 <!--
-FluencyLoop Stage 1 — maintainer-owned, written once, revised rarely.
-Keep it SHORT: a handful of hard constraints and values, not a governance document.
-Stages 2–4 check every feature's decisions against what's written here, so each principle
-should be concrete enough to check a decision against. Delete this comment when you fill it in.
+The project's principles — the short set of hard constraints every feature's design is checked
+against (fluencyloop-plan and fluencyloop-feature do the checking). It is NOT authored cold as a
+ceremony. It starts empty and is *written from your first plan or feature*, then grows as later
+features harvest repeatable stances from real decisions. Same law as the journal: it accretes
+from building. Delete this comment once real principles land.
 -->
 
 **Project:** <name>
-**Ratified:** <date>
 
 ## Principles
 
-### §1 — <principle title>
+_None yet — principles are written from your first plan or feature, and grow as you build._
 
-<one or two sentences stating a non-negotiable and why it exists. e.g. "Services must
-tolerate legitimate burst traffic; a client spiking at a minute boundary is normal, not an
-attack.">
-
-### §2 — <principle title>
-
-<...>
-
-### §3 — <principle title>
-
-<...>
-
-## Out of scope
-
-<optional: things this project deliberately does NOT constrain, so contributors don't
-over-ask the constitution for guidance it never meant to give.>
+<!-- Real principles land here, numbered §1, §2, … (features cite these numbers in their
+`constitution:` fields). Each: a short title, the non-negotiable in a sentence or two, and the
+why (the failure it prevents). Keep them checkable, not platitudes. -->
