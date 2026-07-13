@@ -18,9 +18,7 @@ losing the plot.
 
 FluencyLoop is delivered as coding-agent **skills** + deterministic **bash scripts** +
 committed **docs** in `docs/fluencyloop/` (the constitution, per-feature designs, and session
-journals; the tool's own machine state stays in `.fluencyloop/`) — the same three-layer shape
-as [SpecKit](https://github.com/github/spec-kit), aimed at the opposite point on the timeline
-(*during & after* code, not before).
+journals; the tool's own machine state stays in `.fluencyloop/`).
 
 ```
 ONCE, PER PROJECT        REPEATS, PER FEATURE (contributor-driven)
