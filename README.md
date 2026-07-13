@@ -5,7 +5,6 @@
 [![License](https://img.shields.io/github/license/baokhang83/fluencyloop)](LICENSE)
 [![Top language](https://img.shields.io/github/languages/top/baokhang83/fluencyloop)](https://github.com/baokhang83/fluencyloop)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-orange)](#distribution-roadmap)
-[![Stars](https://img.shields.io/github/stars/baokhang83/fluencyloop?style=social)](https://github.com/baokhang83/fluencyloop/stargazers)
 
 **Stay fluent in the code your AI agent writes.** FluencyLoop is a four-stage workflow that
 teaches you the *why* of each change as it ships — so the agent writes the code without you
