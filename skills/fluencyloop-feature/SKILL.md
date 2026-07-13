@@ -116,8 +116,14 @@ Do not over-invest here: the design is a shape to build against, not a spec to r
 Build the feature one **meaningful slice** at a time (a logical, commit-worthy chunk). Do
 **not** interrupt mid-thought. At each slice boundary:
 
-1. **Review what you just built.** Identify the **one or two real decisions** in that slice
-   — a genuine fork where a reasonable alternative was rejected. Ignore non-decisions.
+1. **Review what you just built — from the slice, not the whole files.** Run `fluencyloop
+   slice-context` (or `.fluencyloop/scripts/slice-context.sh`; add `--json` for the structured
+   form) to get *just this slice's* changed hunks + metadata — the diff since the last journaled
+   session, or the feature's base if none yet, with FluencyLoop's own files filtered out.
+   Identify the **one or two real decisions** in it — a genuine fork where a reasonable
+   alternative was rejected — from those hunks. Only open a full file when the hunks don't carry
+   enough context to judge a decision; re-reading whole files by default is the token waste this
+   replaces. Ignore non-decisions.
 2. **Teach the why — live, in the conversation.** This is the *during*, so it happens *here*,
    as an exchange — **not** by writing the journal and telling the user to go read it (that's
    the *after*).
@@ -249,6 +255,21 @@ decide it **once**, not once per feature. Check `~/.fluencyloop/preferences.md` 
 More generally, at the end of the first feature: notice any hand-off you would otherwise repeat
 verbatim next time, and settle it with a single confirmation you record — never re-prompt for the
 same choice run after run.
+
+## Token budget (rough)
+
+FluencyLoop is meant to be **cheap to run**. Treat these as smell tests, not hard caps:
+
+- **Design (§2):** skim the codebase to the *shapes*, not exhaustively — a few K tokens. You're
+  sketching diagrams, not auditing.
+- **Build, per slice (§3):** read the **slice context** (the diff via `slice-context`), not whole
+  files — typically a few hundred to ~2K tokens. If a slice's context balloons well past that, the
+  slice is too big — split it. Open a full file only when a hunk lacks the context to judge a
+  decision.
+- **Review (§4):** the assembled session journal (already distilled), not the code — ~1–2K.
+
+Read loop state through the deterministic commands — `slice-context --json`, `calibration show
+--json`, `check --json` — which are cheap structured reads, not file scans or git re-derivation.
 
 ## Rules
 
