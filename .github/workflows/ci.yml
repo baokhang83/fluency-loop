@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: shellcheck + footgun lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ShellCheck (scripts, CLI, installer)
+        # shellcheck is preinstalled on the ubuntu runner. -P SCRIPTDIR lets it follow the
+        # `# shellcheck source=common.sh` directives so sourced helpers are analysed too.
+        run: shellcheck -x -P SCRIPTDIR scripts/bash/*.sh fluencyloop install.sh
+      - name: Ban eval (shell=True-equivalent footgun)
+        run: |
+          if grep -rnE '(^|[^[:alnum:]_])eval[[:space:]]' scripts/bash fluencyloop install.sh; then
+            echo "::error::eval is banned in FluencyLoop shell — it runs arbitrary strings as code."
+            exit 1
+          fi
+
+  bats:
+    name: bats tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install bats-core
+        run: |
+          git clone --depth 1 https://github.com/bats-core/bats-core.git "$RUNNER_TEMP/bats"
+          sudo "$RUNNER_TEMP/bats/install.sh" /usr/local
+      - name: Run the suite
+        run: bats --print-output-on-failure tests
