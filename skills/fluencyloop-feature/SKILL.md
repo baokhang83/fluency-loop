@@ -230,14 +230,17 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    taught, judge how the developer engaged and append **one signal per domain dimension** it
    touched:
 
+   Emit **all of the slice's signals in a single command** — pass the `<dimension> <type>` pairs
+   together, so it's *one* shell call (one approval prompt), never one call per signal:
+
    ```
-   fluencyloop calibration signal <dimension> wave      # waved it through — evidence of fluency
-   fluencyloop calibration signal <dimension> deeper    # asked you to unpack it — still building it
-   fluencyloop calibration signal <dimension> correct   # corrected you / drove it — keep teaching rich here
+   fluencyloop calibration signal <dim1> <type1> [<dim2> <type2> ...]
+   # e.g.  fluencyloop calibration signal maven wave junit wave spring deeper
    ```
 
-   Appending is the whole job — trivial, and honest (it records what actually happened, not a
-   guess). The deterministic `fluencyloop calibration compact` (run at the next feature's §0)
+   where `wave` = waved it through (evidence of fluency), `deeper` = asked you to unpack it (still
+   building it), `correct` = corrected you / drove it (keep teaching rich there). Appending is the
+   whole job — trivial, and honest (it records what actually happened, not a guess). The deterministic `fluencyloop calibration compact` (run at the next feature's §0)
    rolls repeated signals into level changes: promote on repeated wave-throughs, demote on
    deeper-asks or corrections. This is how calibration adapts across features instead of resetting
    each session. *(For a brand-new dimension, set its initial level from your §0 probe by editing

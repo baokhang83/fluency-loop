@@ -34,6 +34,13 @@ Describe 'init.ps1' {
         (Get-Content "$script:repo/.gitignore") | Should -Contain '.fluencyloop/**/calibration.md'
     }
 
+    It 'adds its line-ending pins exactly once' {
+        $script:repo = Initialize-TestRepo
+        & $script:PwshExe -NoProfile -File "$script:Bin/init.ps1" | Out-Null
+        @((Get-Content "$script:repo/.gitattributes") | Where-Object { $_ -eq '.fluencyloop/** text eol=lf' }).Count | Should -Be 1
+        @((Get-Content "$script:repo/.gitattributes") | Where-Object { $_ -eq 'docs/fluencyloop/** text eol=lf' }).Count | Should -Be 1
+    }
+
     It 'sets push.autoSetupRemote' {
         $script:repo = Initialize-TestRepo
         (git -C $script:repo config --local push.autoSetupRemote) | Should -Be 'true'

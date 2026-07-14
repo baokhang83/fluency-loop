@@ -125,16 +125,21 @@ switch ($sub) {
         & $ed $CAL
     }
     'signal' {
-        # NB: PowerShell variable names are case-insensitive, so this must NOT be named $sig — that
-        # would alias $SIG (the ledger path).
-        $dim = if ($rest.Count -ge 1) { [string]$rest[0] } else { '' }
-        $kind = if ($rest.Count -ge 2) { [string]$rest[1] } else { '' }
-        if ($kind -ne 'wave' -and $kind -ne 'deeper' -and $kind -ne 'correct') {
-            [Console]::Error.WriteLine('Usage: fluencyloop calibration signal <dimension> <wave|deeper|correct>'); exit 1
+        # Accept one OR MANY <dimension> <type> pairs in a single call, so a slice's signals are
+        # one command (one approval prompt), not N.
+        if ($rest.Count -lt 2 -or ($rest.Count % 2) -ne 0) {
+            [Console]::Error.WriteLine('Usage: fluencyloop calibration signal <dimension> <wave|deeper|correct> [<dim> <type> ...]'); exit 1
         }
-        if (-not $dim) { [Console]::Error.WriteLine('signal needs a dimension.'); exit 1 }
+        for ($i = 1; $i -lt $rest.Count; $i += 2) {
+            if ($rest[$i] -ne 'wave' -and $rest[$i] -ne 'deeper' -and $rest[$i] -ne 'correct') {
+                [Console]::Error.WriteLine("signal type must be wave|deeper|correct (got '$($rest[$i])')"); exit 1
+            }
+        }
         if (-not (Test-Path -LiteralPath $SIG)) { ResetSignals }
-        [System.IO.File]::AppendAllText($SIG, "$(FlToday) $dim $kind`n", (New-Object System.Text.UTF8Encoding($false)))
+        $todayStr = FlToday
+        $lines = ''
+        for ($i = 0; $i + 1 -lt $rest.Count; $i += 2) { $lines += "$todayStr $($rest[$i]) $($rest[$i + 1])`n" }
+        [System.IO.File]::AppendAllText($SIG, $lines, (New-Object System.Text.UTF8Encoding($false)))
     }
     'compact' {
         $dry = ($rest.Count -ge 1 -and $rest[0] -eq '--dry-run')

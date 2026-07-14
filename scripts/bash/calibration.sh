@@ -135,13 +135,26 @@ case "$SUB" in
         exec "${EDITOR:-vi}" "$CAL"
         ;;
     signal)
-        dim="${1:-}"; sig="${2:-}"
-        case "$sig" in wave|deeper|correct) ;; *)
-            echo "Usage: fluencyloop calibration signal <dimension> <wave|deeper|correct>" >&2; exit 1 ;;
-        esac
-        [ -n "$dim" ] || { echo "signal needs a dimension." >&2; exit 1; }
+        # Accept one OR MANY <dimension> <type> pairs in a single call, so a slice's signals are
+        # one command (one approval prompt), not N.
+        if [ "$#" -lt 2 ] || [ $(( $# % 2 )) -ne 0 ]; then
+            echo "Usage: fluencyloop calibration signal <dimension> <wave|deeper|correct> [<dim> <type> ...]" >&2; exit 1
+        fi
+        i=1
+        for a in "$@"; do
+            if [ $(( i % 2 )) -eq 0 ]; then
+                case "$a" in wave|deeper|correct) ;; *)
+                    echo "signal type must be wave|deeper|correct (got '$a')" >&2; exit 1 ;;
+                esac
+            fi
+            i=$((i + 1))
+        done
         [ -f "$SIG" ] || reset_signals
-        printf '%s %s %s\n' "$(today)" "$dim" "$sig" >> "$SIG"
+        today_str="$(today)"
+        while [ "$#" -ge 2 ]; do
+            printf '%s %s %s\n' "$today_str" "$1" "$2" >> "$SIG"
+            shift 2
+        done
         ;;
     compact)
         dry=false; [ "${1:-}" = "--dry-run" ] && dry=true

@@ -35,6 +35,14 @@ setup() { setup_repo; }
     grep -qxF '.fluencyloop/**/calibration.md' "$TESTREPO/.gitignore"
 }
 
+@test "init adds its line-ending pins exactly once" {
+    bash "$BIN/init.sh" >/dev/null
+    run bash "$BIN/init.sh"
+    [ "$status" -eq 0 ]
+    [ "$(grep -cxF '.fluencyloop/** text eol=lf' "$TESTREPO/.gitattributes")" -eq 1 ]
+    [ "$(grep -cxF 'docs/fluencyloop/** text eol=lf' "$TESTREPO/.gitattributes")" -eq 1 ]
+}
+
 @test "init sets push.autoSetupRemote for frictionless feature-branch pushes" {
     bash "$BIN/init.sh" >/dev/null
     [ "$(git -C "$TESTREPO" config --local push.autoSetupRemote)" = "true" ]

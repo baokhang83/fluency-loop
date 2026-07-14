@@ -48,6 +48,15 @@ if (-not $hasGuard) {
     [System.IO.File]::AppendAllText($gitignore, "`n# FluencyLoop: calibration is per-developer and never committed`n$needle`n", (New-Object System.Text.UTF8Encoding($false)))
 }
 
+# Pin FluencyLoop's LF paths in .gitattributes so Windows Git doesn't warn/convert them; the
+# project's own line-ending policy is left to the project.
+$gitattr = "$root/.gitattributes"
+$attrNeedle = '.fluencyloop/** text eol=lf'
+$hasAttr = (Test-Path -LiteralPath $gitattr) -and ((Get-Content -Raw -LiteralPath $gitattr) -like "*$attrNeedle*")
+if (-not $hasAttr) {
+    [System.IO.File]::AppendAllText($gitattr, "`n# FluencyLoop writes these LF; pin so Git does not warn/convert on Windows.`n.fluencyloop/** text eol=lf`ndocs/fluencyloop/** text eol=lf`n", (New-Object System.Text.UTF8Encoding($false)))
+}
+
 # push.autoSetupRemote so the first push on a new feature branch sets upstream automatically.
 $autoRemoteSet = 'false'
 $cur = & git -C $root config --local push.autoSetupRemote 2>$null

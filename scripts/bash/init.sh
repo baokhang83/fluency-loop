@@ -64,6 +64,14 @@ if ! { [ -f "$GITIGNORE" ] && grep -qxF '.fluencyloop/**/calibration.md' "$GITIG
     printf '\n# FluencyLoop: calibration is per-developer and never committed\n.fluencyloop/**/calibration.md\n' >> "$GITIGNORE"
 fi
 
+# FluencyLoop writes its state + docs with LF. Pin those paths in .gitattributes so Git doesn't
+# warn ("LF will be replaced by CRLF") or convert them on Windows checkouts (autocrlf). Scoped to
+# FluencyLoop's own paths — the project's own line-ending policy is left to the project.
+GITATTR="$ROOT/.gitattributes"
+if ! { [ -f "$GITATTR" ] && grep -qF '.fluencyloop/** text eol=lf' "$GITATTR"; }; then
+    printf '\n# FluencyLoop writes these LF; pin so Git does not warn/convert on Windows.\n.fluencyloop/** text eol=lf\ndocs/fluencyloop/** text eol=lf\n' >> "$GITATTR"
+fi
+
 # FluencyLoop creates a branch per feature. Set push.autoSetupRemote (repo-local) so the
 # first `git push` on a new feature branch sets its upstream automatically — no
 # `git push --set-upstream` friction. (git >= 2.37; ignored on older versions.)
