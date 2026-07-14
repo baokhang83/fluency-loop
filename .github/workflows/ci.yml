@@ -24,6 +24,12 @@ jobs:
             echo "::error::eval is banned in FluencyLoop shell — it runs arbitrary strings as code."
             exit 1
           fi
+      - name: bats test names must be ASCII (Windows/Git Bash mangles multibyte names)
+        run: |
+          if grep -rnP '@test .*[^\x00-\x7F]' tests; then
+            echo "::error::bats @test names must be ASCII — a multibyte char breaks the Git Bash runner."
+            exit 1
+          fi
 
   bats:
     name: bats tests (Linux)
