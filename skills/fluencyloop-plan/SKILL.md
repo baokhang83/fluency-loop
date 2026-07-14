@@ -60,6 +60,11 @@ a CDN, and do **not** inline a minified Mermaid/JS bundle (its lone surrogates f
 (prefer ASCII — HTML entities over literal dashes/box-drawing). Then walk the user through it and
 invite reactions — this is a conversation.
 
+**If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
+bouncing), **say so explicitly** and point the user to the Mermaid diagrams in **`plan.md`** —
+they render on GitHub, so the architecture is still *shown*, just in the committed doc instead of
+a live page. Give them the path and walk them through it there; never silently skip the "show" step.
+
 Persist the same diagrams as **Mermaid** in `plan.md` under `## Architecture` (blocks
 **top-level**, never nested in another fence, so GitHub renders them). Check the shapes against
 the constitution; if one conflicts with a principle, say so plainly in `## Constitution check` —
@@ -101,19 +106,33 @@ calls in the request path"*), not platitudes. Show them, confirm, and write them
 - After birth it **grows** as features harvest principles from decisions (fluencyloop-feature §3)
   — you don't need to make it complete here.
 
-## 6. GitHub tickets — offer, ask each plan
+## 6. GitHub tickets — create them live, or offer a one-time `gh` setup
 
-Offer to turn the task breakdown into **GitHub issues under a milestone** (one issue per task
-item; the milestone is the initiative). This is confirmed **per plan** — ask before creating:
-*"Create these N issues + the '<initiative>' milestone via `gh` now?"* Only proceed on a yes.
+Check `gh auth status` **first**:
 
-- **`gh` available and authed** (`gh auth status`) — create the milestone, then the issues
-  (title = task intent, body = intent + dependencies, `--milestone` set). Record the created
-  issue/milestone links back into `plan.md` under `## Tickets`. `gh` is cross-platform (Windows
-  via winget/scoop/choco, macOS, Linux) — the commands are identical.
-- **`gh` missing or unauthed, or the user declines the live create** — don't call `gh`. Instead
-  write the runnable `gh issue create …` / `gh api …` commands into `## Tickets` for the user to
-  run themselves. Never leave the plan blocked on tooling.
+- **`gh` is available and authed** — offer to turn the task breakdown into **GitHub issues under a
+  milestone** (one issue per task item; the milestone is the initiative), confirmed **per plan**:
+  *"Create these N issues + the '<initiative>' milestone now?"* On yes, create the milestone then
+  the issues (title = task intent, body = intent + dependencies, `--milestone` set) and record the
+  links back into `plan.md` under `## Tickets`.
+
+- **`gh` is missing or unauthed** — this is worth a **one-time** setup offer, because `gh` unlocks
+  real automation. Check `~/.fluencyloop/preferences.md` for a settled `gh-setup` choice:
+  - **Not settled yet** — offer **once** via `AskUserQuestion`, and *sell what it unlocks*: with
+    `gh`, FluencyLoop files your whole task breakdown as GitHub issues under a milestone **for you**,
+    and opens prepopulated PRs at review — instead of you running commands by hand. Frame it so
+    **yes** is the easy call, e.g. *"Want me to set up `gh` so I can file these N tasks as issues +
+    a milestone for you? One-time — I won't ask again."* Options: **Yes, set it up** *(recommended,
+    list first)* / **Not now**. Record the answer to `preferences.md` as `gh-setup: done` or
+    `gh-setup: declined`, and **never ask again**.
+    - On **yes** — install `gh` the way that fits **their** OS. Don't work from a hardcoded list of
+      package managers (it rots); the canonical, always-current installer for every platform is
+      <https://cli.github.com> — point there and pick the obvious command for their environment.
+      Then `gh auth login` (uniform everywhere), and create the issues + milestone.
+    - On **not now** — write the runnable `gh issue create …` commands into `## Tickets` and move on.
+  - **Already `declined`** — don't re-offer; just save the runnable commands to `## Tickets`.
+
+The plan is complete either way — no friction.
 
 ## 7. Hand off to the build loop
 

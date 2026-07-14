@@ -56,11 +56,20 @@ to copy-paste into GitHub.
 
    Confirm the title/base with the user first; show them the body you're about to use. On
    success, give them the PR URL.
-3. If `gh` is **not** installed, don't dead-end into copy-paste silently — say so, and offer
-   the two fast paths: (a) `brew install gh && gh auth login`, then step 2; or (b) a
-   prepopulated compare URL, e.g.
-   `https://github.com/<owner>/<repo>/compare/main...<branch>?expand=1&title=<t>&body=<url-encoded>`
-   (note the URL length limit; fall back to pasting the body if it's too long).
+3. If `gh` is **not** available, still deliver — and make a **one-time** setup offer, because `gh`
+   is what lets FluencyLoop open the PR for you. First hand over the reviewer view **rendered**, and
+   a **prepopulated compare URL** that opens a ready-to-file PR in the browser (no `gh`, any OS):
+   `https://github.com/<owner>/<repo>/compare/<base>...<branch>?expand=1&title=<t>&body=<url-encoded>`
+   (mind the URL length limit; fall back to the pasteable body if it's too long). Then check
+   `~/.fluencyloop/preferences.md` for a settled `gh-setup` choice:
+   - **Not settled yet** — offer **once** via `AskUserQuestion`, selling it: *"Want me to set up
+     `gh` so I open your PRs (and file your plan's issues) automatically from here on? One-time —
+     I won't ask again."* Options **Yes, set it up** *(recommended, list first)* / **Not now**.
+     Record `gh-setup: done` / `gh-setup: declined` to `preferences.md`; never ask again. On **yes**,
+     install `gh` the way that fits their OS — don't work from a hardcoded package-manager list; the
+     canonical installer for every platform is <https://cli.github.com> — then `gh auth login` and
+     create the PR (step 2).
+   - **Already `declined`** — don't re-offer; the compare URL above is the path.
 
 Put any external link in the PR's first comment, not the body. Do **not** merge the PR unless
 explicitly asked.

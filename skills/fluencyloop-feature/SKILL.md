@@ -38,10 +38,11 @@ block on it.
 
 **Load the learner's preferences.** Also read `~/.fluencyloop/preferences.md` — a sibling to
 `calibration.md` (global, per-developer, **never committed**) that records recurring *workflow*
-choices already settled once, so you never re-ask them. The one you'll meet first is the
-completion hand-off: whether to commit + push + open the PR automatically, or hand off manually
-each feature (see §4). Honor whatever it records without re-asking. If it's missing, that's fine —
-you'll create it the first time a recurring choice comes up.
+choices already settled once, so you never re-ask them — e.g. the completion hand-off (commit +
+push + open the PR vs. hand off manually, §4) and `gh-setup` (whether to set up the `gh` CLI,
+offered once when `gh` is missing so the loop can automate PRs/issues). Honor whatever it records
+without re-asking. If it's missing, that's fine — you'll create it the first time a recurring
+choice comes up.
 
 **Probe before you dive in.** Continuously estimating the learner's knowledge is critical, and it
 starts *before* the first explanation. From the feature's intent and the code, list the domain
@@ -50,6 +51,14 @@ settle, **ask** — concisely and batched (one tab per concept via `AskUserQuest
 several). For example, before building a Maven plugin: *"Are you familiar with `plugin.xml` and
 Mojo objects (`@Mojo` / `AbstractMojo`)?"* — rather than silently guessing and either boring or
 losing them. Record the answers into the knowledge base and let them set your opening depth.
+
+**A probe answer sets *teaching depth*, never the technical decision.** What the developer knows
+changes how *tersely* you explain — it must **never** steer which approach you take. If they say
+they know Angular async pipes, that makes async pipes the *cheap-to-teach* option, **not** the one
+to avoid; do not swap to an unfamiliar approach "so they learn more." The choice of approach is
+driven by what's right for the code and the developer's intent — they are the architect — not by
+what they'd learn most from. Steering the design off someone's familiarity is a violation of their
+authorship; flag the honest tradeoff and let them choose.
 
 **Never infer fluency from authorship.** That the developer wrote — or generated — the code
 you're touching does **not** mean they understand it. AI-generated / vibecoded code is
@@ -88,6 +97,12 @@ deploy fail. **Byte-check before publishing:** the file must be valid UTF-8 with
 surrogates / `U+FFFD` and must JSON-round-trip (prefer pure ASCII — HTML entities over literal
 dashes/box-drawing); publish only if the check is clean, or the deploy bounces. Then walk the
 user through what they're looking at and invite reactions — this is a conversation, not a handoff.
+
+**If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
+bouncing), **say so explicitly** — don't silently skip the "show" step — and point the user to the
+Mermaid diagrams in the feature's **`design.md`**: those render on GitHub, so the design is still
+*shown*, just in the committed doc instead of a live page. Give them the path and walk them through
+it there.
 
 Persist the same diagrams as **Mermaid** in `design.md` (blocks **top-level**, never nested
 in another fence, so GitHub renders them) — that's the durable, committed copy. The Artifact
@@ -159,9 +174,12 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    - **Anchor it to the rendered design diagram** — point back to the Artifact from §2 and name
      the exact shape the decision concerns, so the *why* lands on something they can see, not
      just prose. If the decision changed the design, re-render and re-check the diagram.
-   - When a slice carries several decisions to sign off at once, you may confirm them
-     **interactively, one tab per decision** (`AskUserQuestion`) rather than in a wall of text —
-     but the live teaching, not the prompt, stays the point.
+   - **Real questions go through a form, never buried in prose.** Any genuine question you put to
+     the developer — a decision to sign off, a fork to choose, "which way do you want this?" —
+     **must** use `AskUserQuestion` (one tab per decision/question), not a plain-text question in
+     the middle of an explanation. (A rhetorical aside — *"if that feels shaky, say so"* — is not
+     a real question; those stay inline.) The live teaching, not the prompt, stays the point, but
+     every actual choice is a form so it's unmistakable and easy to answer.
    - **Pause and check understanding** *(where the policy calls for it — `learning` / `new`)* —
      ask if it lands, and explicitly offer to go deeper ("want me to unpack how X works, or is
      this enough to trust it?"). Then *wait* for the answer before moving on. A monologue that
@@ -230,11 +248,12 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    added, so don't let it stay dormant)*. When a decision's *why* is a **repeatable stance** — a
    rule you'd apply again, not a one-off (*"no synchronous cross-service calls in the request
    path"*, *"config is validated at load, never at use"*) — **offer to promote it to a
-   constitution principle**. Be **assertive**: name the candidate and ask outright (*"that reads
-   like a standing rule, not a one-off — promote it to §N of the constitution?"*), rather than
-   waiting to be asked. On a yes, append it to `docs/fluencyloop/constitution.md` under
-   `## Principles` as the next `§N` (short title + the non-negotiable + the why), and cite that
-   `§N` in the decision's `constitution:` field. On a no, leave it — a one-off is not a principle.
+   constitution principle**. Be **assertive**, and ask it as a form: put the candidate to the
+   developer via `AskUserQuestion` — name the proposed principle and offer **Promote to §N** vs
+   **Leave as a one-off** — rather than a plain-text question they might skim past. Don't wait to
+   be asked. On **promote**, append it to `docs/fluencyloop/constitution.md` under `## Principles`
+   as the next `§N` (short title + the non-negotiable + the why), and cite that `§N` in the
+   decision's `constitution:` field. On **leave**, it stays a one-off — not a principle.
    This is how the constitution *grows*: harvested from real decisions, never a cold authoring pass.
 
 Repeat per slice until the feature is built. The journal accretes as a byproduct — the
@@ -245,15 +264,26 @@ developer never writes it by hand.
 When the feature is ready for a PR, tell the user they can run **fluencyloop-review** to
 assemble the reviewer-facing view from the sessions.
 
-The commit + push + open-PR hand-off is a **behavioral pattern that recurs every feature** — so
-decide it **once**, not once per feature. Check `~/.fluencyloop/preferences.md` (loaded in §0):
+**Check what's actually possible here first** — run `gh auth status`. If `gh` isn't installed or
+authed, opening a PR isn't available *yet*. Don't just drop it: if `preferences.md` has no settled
+`gh-setup` choice, make the **one-time** offer to set `gh` up — sold on the fact that it lets you
+open the PR (and file plan issues) for them — via `AskUserQuestion` (**Yes, set it up**
+*(recommended)* / **Not now**), recording `gh-setup: done` / `gh-setup: declined`. On **yes**,
+install from <https://cli.github.com> (pick the command that fits their OS — don't work from a
+hardcoded package-manager list) then `gh auth login`. If `gh` stays unavailable (declined or
+deferred), the hand-off is at most *commit + push*, and a PR can be opened later via
+`fluencyloop-review`. Only run the full **commit + push + open-PR** automation where `gh` works.
+
+The hand-off is a **behavioral pattern that recurs every feature** — so decide it **once**, not
+once per feature. Check `~/.fluencyloop/preferences.md` (loaded in §0):
 
 - **A preference is already recorded** — honor it silently, and **do not re-ask**. If it says
   automatic, go ahead and commit + push + open the PR yourself (run fluencyloop-review first) at
   completion; if manual, just point the user at fluencyloop-review and stop.
 - **No preference yet (this is the first feature)** — ask **exactly once**, via a single
   `AskUserQuestion` confirmation rather than a per-feature prompt: from now on, should you commit
-  + push + open the PR yourself at feature completion, or keep handing off manually each time?
+  + push **(+ open the PR, when `gh` is available)** yourself at feature completion, or keep
+  handing off manually each time? (Drop the PR clause entirely if `gh` isn't available here.)
   Persist the answer to `~/.fluencyloop/preferences.md` (create it — global, uncommitted, sibling
   to `calibration.md`) and honor it now and on every later feature. Never pose this per-feature
   question again. Format:
