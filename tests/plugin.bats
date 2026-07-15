@@ -89,6 +89,9 @@ for stage in ["plan", "feature", "review", "backfill"]:
     assert f"$fluencyloop:{stage}" in readme
     assert f"$fluencyloop-{stage}" not in readme
 router_text = read_text(dist / "skills" / "fluencyloop" / "SKILL.md")
+assert "## Literal CLI Fast Path (Codex)" in router_text
+assert "Do not send an interim update" in router_text
+assert "must not automatically start a feature or plan" in router_text
 assert "two directories above this loaded `SKILL.md`" in router_text
 assert "FLUENCYLOOP_SKILL_DIR" not in router_text
 assert claude_entry["skills"] == [

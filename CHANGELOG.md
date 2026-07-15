@@ -2,7 +2,7 @@
 
 All notable changes to FluencyLoop are documented here.
 
-## 0.2.8
+## 0.2.9
 
 ### Fixed
 
@@ -11,6 +11,8 @@ All notable changes to FluencyLoop are documented here.
   the plugin name in the picker. Claude Code commands remain `/fluencyloop:<stage>`.
 - Codex skills now invoke the bundled dispatcher without exposing its internal path variable, and
   `fluencyloop init` preserves Git's original error when repository initialisation fails.
+- Literal Codex CLI requests now run without preflight narration, inspection, or an automatic
+  transition into a FluencyLoop stage.
 
 ## 0.2.6
 
