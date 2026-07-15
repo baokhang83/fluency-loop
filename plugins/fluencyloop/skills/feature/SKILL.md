@@ -154,6 +154,28 @@ Do not over-invest here: the design is a shape to build against, not a spec to r
 Build the feature one **meaningful slice** at a time (a logical, commit-worthy chunk). Do
 **not** interrupt mid-thought. At each slice boundary:
 
+### Codex teaching gate - visible before the journal
+
+When `slice-context --json` reports `likely_decision: true`, the next action is a **user-visible
+teaching message**, not a `fluencyloop decision` command. This is a hard ordering rule for Codex:
+
+1. Send a standalone teaching turn before any `fluencyloop decision`, decision-related session
+   edit, `fluencyloop calibration signal`, or completion summary. State the call, why it fits this
+   code, and the rejected alternative. Anchor it to the changed code and the design shape. A status
+   update such as "I am recording the decisions" is not teaching.
+2. Use the depth policy below. If the relevant domain is absent from calibration, it is **unknown**:
+   probe it in a concise standalone chat question and stop. Treat `learning` and `new` the same
+   way: explain, ask whether it lands or they want to go deeper, then wait. Do not journal the
+   decision or continue building until the developer replies.
+3. After a `fluent` or `familiar` teaching turn, journal the same rationale. Never write the
+   journal first and substitute it for the conversation.
+4. Log a calibration signal only from a real developer response. No reply is not a `wave`; omit
+   the signal until there is evidence of engagement.
+
+The forbidden sequence is: identify a decision in tools, then immediately run `fluencyloop
+decision` and write the session without a teaching turn. The transcript must make the teaching
+visible; the journal is its durable byproduct.
+
 1. **Review what you just built — from the slice, not the whole files.** Run `fluencyloop
    slice-context` (add `--json` for the structured form) to get *just this slice's* changed hunks
    + metadata — the diff since the last journaled

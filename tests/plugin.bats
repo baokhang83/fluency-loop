@@ -68,6 +68,11 @@ feature_text = read_text(root / "claude-skills" / "feature" / "SKILL.md")
 assert "If `git_repo` or `fluency` is" in feature_text
 assert "without asking the developer" in feature_text
 assert "must be paths under `docs/fluencyloop/`" in feature_text
+codex_feature_text = read_text(dist / "skills" / "feature" / "SKILL.md")
+assert "### Codex teaching gate - visible before the journal" in codex_feature_text
+assert "before any `fluencyloop decision`" in codex_feature_text
+assert "No reply is not a `wave`" in codex_feature_text
+assert "without a teaching turn" in codex_feature_text
 for path in [
     dist / "skills" / "feature" / "SKILL.md",
     dist / "skills" / "plan" / "SKILL.md",

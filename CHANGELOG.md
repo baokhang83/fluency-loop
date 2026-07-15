@@ -2,6 +2,14 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.11
+
+### Fixed
+
+- Codex feature runs now require a user-visible teaching turn before decisions are journaled.
+  Unknown, `learning`, and `new` domains pause for the developer's response; calibration signals
+  require actual engagement. Claude Code's workflow is unchanged.
+
 ## 0.2.10
 
 ### Fixed
