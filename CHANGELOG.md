@@ -2,6 +2,15 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.6
+
+### Fixed
+
+- `fluencyloop slice-context` now handles an unborn Git branch without attempting to diff an
+  invalid `HEAD`; it returns the staged and untracked first-project files as the initial slice.
+- When a live design Artifact cannot be rendered, feature, plan, and backfill workflows now show
+  an ASCII sketch in chat before pointing to the committed Mermaid document.
+
 ## 0.2.5
 
 ### Fixed

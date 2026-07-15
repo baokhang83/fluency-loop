@@ -68,6 +68,17 @@ feature_text = read_text(root / "claude-skills" / "feature" / "SKILL.md")
 assert "If `git_repo` or `fluency` is" in feature_text
 assert "without asking the developer" in feature_text
 assert "must be paths under `docs/fluencyloop/`" in feature_text
+for path in [
+    dist / "skills" / "fluencyloop-feature" / "SKILL.md",
+    dist / "skills" / "fluencyloop-plan" / "SKILL.md",
+    dist / "skills" / "fluencyloop-backfill" / "SKILL.md",
+    root / "claude-skills" / "feature" / "SKILL.md",
+    root / "claude-skills" / "plan" / "SKILL.md",
+    root / "claude-skills" / "backfill" / "SKILL.md",
+]:
+    text = read_text(path)
+    assert "ASCII" in text
+    assert "Mermaid source" in text
 readme = read_text(root / "README.md")
 assert "**Enable auto-update**" in readme
 assert "`/reload-plugins` to activate it in the current session" in readme
