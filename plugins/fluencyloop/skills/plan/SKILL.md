@@ -35,6 +35,10 @@ Run `fluencyloop check --json`. If `git_repo` or `fluency` is false, run `fluenc
 without asking the developer. It initialises Git in the current project directory when needed,
 then creates FluencyLoop's state. Only stop if `init` itself fails.
 
+For that `fluencyloop init --json` command in Codex, request sandbox elevation before its first
+execution. It may create or update Codex-protected `.git` metadata; do not first attempt it in the
+standard sandbox.
+
 **Read the constitution up front** — `docs/fluencyloop/constitution.md`, and **if it's a pointer**
 (a `Source of truth:` line naming another file, e.g. `.specify/memory/constitution.md`), read
 *that* file. The architecture you design in §2 is checked against it. If it's still the **empty
@@ -92,6 +96,8 @@ substitute. Then point the user to **`plan.md`** for GitHub/browser rendering.
 After the architecture is rendered or sketched and before writing the task breakdown, roadmap,
 constitution principles, or tickets, send a **user-visible architecture teaching turn**. This is a
 hard ordering rule for Codex, not a status update:
+
+This is a conversation pause, not a build or merge gate.
 
 1. Walk through the main components, their boundaries, and the load-bearing flow. Explain the
    architectural choice and its rejected alternative, anchored to the rendered diagram or ASCII
@@ -188,8 +194,8 @@ branches yourself here; §7 hands off, it doesn't build.
 
 - **A map, not a spec.** Don't over-invest — the plan is a shape to build against; the features
   are where it's ratified. Refine once, then start building.
-- **Never gate.** Flag where the architecture tensions a principle; never block. A plan is
-  advisory scaffolding, not an approval checkpoint.
+- **Do not block builds or merges.** Pause only for a required learning response. Flag where the
+  architecture tensions a principle; a plan is advisory scaffolding, not an approval checkpoint.
 - **The developer stays the architect.** Teach the architecture and the critical path so they
   hold them; do not take authorship. Set depth from the calibration profile (§0).
 - **Tickets are opt-in, per plan.** Ask before touching `gh`; fall back to a runnable script if
