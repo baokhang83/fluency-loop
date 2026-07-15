@@ -2,6 +2,18 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.3
+
+### Fixed
+
+- `fluencyloop check` (and every command that first calls `require_fluency`, e.g. `feature`,
+  `plan`, `session`, `decision`) used to abort silently with exit code 1 and no message when run
+  outside a git repository — a `set -e` interaction with three bash helpers (`fluency_dir`,
+  `docs_dir`, `state_path`) that returned a non-zero status instead of an empty string when there
+  was no repo root. They now return empty cleanly, and `fluencyloop check` reports "not a git
+  repository" explicitly (also surfaced as `"git_repo"` in `--json`) instead of failing before it
+  can print anything.
+
 ## 0.2.2
 
 ### Added

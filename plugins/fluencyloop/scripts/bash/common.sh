@@ -15,7 +15,7 @@ repo_root() {
 # the vendored scripts/ and templates/ plumbing. Human-facing artifacts live under docs_dir.
 fluency_dir() {
     local root; root="$(repo_root)"
-    [ -n "$root" ] && printf '%s/.fluencyloop' "$root"
+    if [ -n "$root" ]; then printf '%s/.fluencyloop' "$root"; fi
 }
 
 # Absolute path to the project's human-facing FluencyLoop docs. The constitution, per-feature
@@ -23,7 +23,7 @@ fluency_dir() {
 # they don't collide with a project's own documentation.
 docs_dir() {
     local root; root="$(repo_root)"
-    [ -n "$root" ] && printf '%s/docs/fluencyloop' "$root"
+    if [ -n "$root" ]; then printf '%s/docs/fluencyloop' "$root"; fi
 }
 
 # The project constitution (a human doc). Lives under docs_dir now, with the same back-compat
@@ -120,7 +120,7 @@ current_feature_slug() {
 # re-deriving from git every turn. Machine state, so it lives in .fluencyloop/; committed with
 # the feature branch (part of the journal record). Written by new-feature.sh / new-session.sh.
 
-state_path() { local d; d="$(fluency_dir)"; [ -n "$d" ] && printf '%s/state.json' "$d"; }
+state_path() { local d; d="$(fluency_dir)"; if [ -n "$d" ]; then printf '%s/state.json' "$d"; fi; }
 
 # A repo-relative path (state stores paths relative to the repo root, so they survive a move).
 repo_rel() { local root; root="$(repo_root)"; printf '%s' "${1#"$root"/}"; }

@@ -12,6 +12,7 @@ foreach ($a in $args) {
 }
 
 $root = FlRepoRoot
+$gitRepoStr = if ($root) { 'true' } else { 'false' }
 
 $fdir = FlFluencyDir
 $fluencyStr = if ($fdir -and (Test-Path -LiteralPath $fdir -PathType Container)) { 'true' } else { 'false' }
@@ -57,7 +58,8 @@ if ($const -and (Test-Path -LiteralPath $const)) {
 }
 
 if ($jsonMode) {
-    $json = '{"fluency":' + $fluencyStr +
+    $json = '{"git_repo":' + $gitRepoStr +
+            ',"fluency":' + $fluencyStr +
             ',"branch":"' + (FlJsonEscape $branch) + '"' +
             ',"feature":"' + (FlJsonEscape $feature) + '"' +
             ',"stage":"' + (FlJsonEscape $stage) + '"' +
@@ -72,6 +74,9 @@ if ($jsonMode) {
 
 function Mark([string]$b) { if ($b -eq 'true') { 'ok ' } else { 'XX ' } }
 FlOut 'FluencyLoop check'
+if ($gitRepoStr -eq 'false') {
+    FlOut "  XX  not a git repository — run 'git init' (or cd into one), then 'fluencyloop init'"
+}
 FlOut ("  $(Mark $fluencyStr) .fluencyloop/ present")
 if ($feature) {
     $s = if ($stage) { " (stage: $stage)" } else { '' }

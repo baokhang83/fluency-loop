@@ -44,6 +44,18 @@ load test_helper
     [ "$(bash "$BIN/check.sh" --json | json_field unjournaled_commits)" = "1" ]
 }
 
+@test "check: outside any git repository, reports git_repo false without crashing" {
+    setup_no_repo
+    run bash "$BIN/check.sh" --json
+    [ "$status" -eq 0 ]
+    [ "$(echo "$output" | json_field git_repo)" = "False" ] || [ "$(echo "$output" | json_field git_repo)" = "false" ]
+    [ "$(echo "$output" | json_field fluency)" = "False" ] || [ "$(echo "$output" | json_field fluency)" = "false" ]
+
+    run bash "$BIN/check.sh"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"not a git repository"* ]]
+}
+
 @test "check: absent constitution informs without erroring" {
     setup_initialized_repo
     rm -f "$TESTREPO/docs/fluencyloop/constitution.md"

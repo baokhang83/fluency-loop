@@ -29,6 +29,14 @@ setup_initialized_repo() {
     bash "$BIN/init.sh" >/dev/null
 }
 
+# A plain directory that is NOT a git repository at all (no `.git`, no parent repo). Regression
+# fixture: scripts must fail with a clear message (or degrade gracefully), never crash silently.
+setup_no_repo() {
+    TESTREPO="$(mktemp -d "${BATS_TMPDIR:-/tmp}/flnorepo.XXXXXX")"
+    cd "$TESTREPO" || return 1
+    export FLUENCYLOOP_HOME="$TESTREPO/.home"
+}
+
 teardown() {
     [ -n "${TESTREPO:-}" ] && rm -rf "$TESTREPO"
     return 0

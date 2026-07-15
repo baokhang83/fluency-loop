@@ -21,6 +21,8 @@ for arg in "$@"; do
 done
 
 ROOT="$(repo_root)"
+IN_GIT_REPO=false
+[ -n "$ROOT" ] && IN_GIT_REPO=true
 
 # --- is the loop set up here? ---
 FLUENCY_DIR="$(fluency_dir)"
@@ -68,7 +70,8 @@ if [ -n "$CONSTITUTION" ] && [ -f "$CONSTITUTION" ]; then
 fi
 
 if $JSON_MODE; then
-    printf '{"fluency":%s,"branch":"%s","feature":"%s","stage":"%s","base_ref":"%s","last_session":"%s","unjournaled_commits":%s,"calibration":%s,"constitution":"%s"}\n' \
+    printf '{"git_repo":%s,"fluency":%s,"branch":"%s","feature":"%s","stage":"%s","base_ref":"%s","last_session":"%s","unjournaled_commits":%s,"calibration":%s,"constitution":"%s"}\n' \
+        "$IN_GIT_REPO" \
         "$FLUENCY_PRESENT" \
         "$(json_escape "$BRANCH")" \
         "$(json_escape "$FEATURE")" \
@@ -84,6 +87,9 @@ fi
 # Human form.
 mark() { [ "$1" = true ] && printf 'ok ' || printf 'XX '; }
 echo "FluencyLoop check"
+if ! $IN_GIT_REPO; then
+    echo "  XX  not a git repository — run 'git init' (or cd into one), then 'fluencyloop init'"
+fi
 echo "  $(mark "$FLUENCY_PRESENT") .fluencyloop/ present"
 if [ -n "$FEATURE" ]; then
     echo "  ok  active feature: $FEATURE${STAGE:+ (stage: $STAGE)}"

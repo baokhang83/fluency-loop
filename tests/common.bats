@@ -52,6 +52,19 @@ setup() { setup_initialized_repo; source "$BIN/common.sh"; }
     [ -z "$(state_get feature)" ]
 }
 
+@test "fluency_dir/docs_dir/state_path return empty (not a crash) outside a git repo" {
+    # Regression: these used to end in a bare `[ -n "$root" ] && printf ...`, whose failing
+    # exit status aborted the whole calling script under `set -e` the moment it was captured
+    # via command substitution (e.g. `X="$(fluency_dir)"`) — silently, with no message, in any
+    # repo-less directory. See check.bats: "outside any git repository ...".
+    local outside; outside="$(mktemp -d "${BATS_TMPDIR:-/tmp}/flnorepo.XXXXXX")"
+    cd "$outside" || return 1
+    [ "$(fluency_dir)" = "" ]
+    [ "$(docs_dir)" = "" ]
+    [ "$(state_path)" = "" ]
+    rm -rf "$outside"
+}
+
 @test "repo_rel makes a path relative to the repo root" {
     [ "$(repo_rel "$TESTREPO/docs/fluencyloop/x.md")" = "docs/fluencyloop/x.md" ]
 }
