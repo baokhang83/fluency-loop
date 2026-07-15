@@ -52,9 +52,19 @@ for alias, source in {
     source_text = (dist / "skills" / source / "SKILL.md").read_text()
     assert f"name: {alias}" in alias_text
     assert f"name: {source}" in source_text
+    assert '"${CLAUDE_PLUGIN_ROOT}/bin/fluencyloop" <arguments>' in alias_text
+    assert "it is never a chat instruction" in alias_text
+    assert "globally installed" in alias_text
     assert "## Bundled CLI (Codex)" in source_text
     assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in source_text
     assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in source_text
+feature_text = (root / "claude-skills" / "feature" / "SKILL.md").read_text()
+assert "If `git_repo` or `fluency` is" in feature_text
+assert "without asking the developer" in feature_text
+assert "must be paths under `docs/fluencyloop/`" in feature_text
+readme = (root / "README.md").read_text()
+assert "**Enable auto-update**" in readme
+assert "`/reload-plugins` to activate it in the current session" in readme
 router_text = (dist / "skills" / "fluencyloop" / "SKILL.md").read_text()
 assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in router_text
 assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in router_text
@@ -72,9 +82,24 @@ PY
 }
 
 @test "Claude plugin launcher runs the bundled CLI" {
-    run bash "$REPO_ROOT/bin/fluencyloop" version
-    [ "$status" -eq 0 ]
-    [ "$output" = "$(cat "$DIST/VERSION")" ]
+  run bash "$REPO_ROOT/bin/fluencyloop" version
+  [ "$status" -eq 0 ]
+  [ "$output" = "$(cat "$DIST/VERSION")" ]
+}
+
+@test "Claude plugin launcher creates feature documents under docs" {
+  setup_repo
+
+  run bash "$REPO_ROOT/bin/fluencyloop" init --json
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"docs_dir"'* ]]
+  [ -d "$TESTREPO/docs/fluencyloop" ]
+
+  run bash "$REPO_ROOT/bin/fluencyloop" feature --json "write documentation"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *'"design"'* ]]
+  [ -f "$TESTREPO/docs/fluencyloop/features/write-documentation/design.md" ]
+  [ ! -e "$TESTREPO/.fluencyloop/features/write-documentation" ]
 }
 
 @test "Codex plugin bundles the CLI beside its skills" {
@@ -83,7 +108,7 @@ PY
     [ "$output" = "$(cat "$DIST/VERSION")" ]
 }
 
-@test "Codex startup refresh hook is safe outside an installed plugin cache" {
+@test "Codex startup refresh hook is safe outside an installed plugin root" {
     run env PLUGIN_ROOT="$DIST" bash "$DIST/hooks/refresh-marketplace.sh"
     [ "$status" -eq 0 ]
     [ -z "$output" ]
@@ -92,6 +117,26 @@ PY
 @test "Codex startup refresh hook updates only its supplying marketplace" {
     local plugin_root="$BATS_TEST_TMPDIR/plugins/cache/fluencyloop/fluencyloop/0.2.1"
     local calls="$BATS_TEST_TMPDIR/codex-calls"
+    mkdir -p "$plugin_root"
+
+    codex() {
+        printf '%s\n' "$*" >> "$CODEX_CALLS"
+    }
+    export -f codex
+    export CODEX_CALLS="$calls"
+
+    run env PLUGIN_ROOT="$plugin_root" bash "$DIST/hooks/refresh-marketplace.sh"
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
+
+    run cat "$calls"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'plugin marketplace upgrade fluencyloop --json\nplugin add fluencyloop@fluencyloop --json' ]
+}
+
+@test "Codex startup refresh hook supports the marketplace snapshot root" {
+    local plugin_root="$BATS_TEST_TMPDIR/.tmp/marketplaces/fluencyloop/plugins/fluencyloop"
+    local calls="$BATS_TEST_TMPDIR/codex-marketplace-root-calls"
     mkdir -p "$plugin_root"
 
     codex() {
