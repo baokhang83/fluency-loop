@@ -97,13 +97,6 @@ activates that update in the following session, not part-way through the one alr
 The hook never refreshes another plugin. Codex will ask for a one-time hook review; approve it
 from `/hooks` to enable this behaviour.
 
-Existing Codex installations need this one final manual refresh to receive the startup hook:
-
-```bash
-codex plugin marketplace upgrade fluencyloop
-codex plugin add fluencyloop@fluencyloop
-```
-
 ## Quickstart
 
 Inside the repository you want to work on, invoke the workflow stage in your installed agent.
