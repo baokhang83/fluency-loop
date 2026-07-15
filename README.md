@@ -99,8 +99,8 @@ The plan and feature stages initialise `.fluencyloop/` automatically when needed
 
 | Goal | Claude Code | Codex |
 |------|-------------|-------|
-| Plan a large initiative — architecture + roadmap | `/fluencyloop:plan revamp the checkout flow` | `$fluencyloop-plan revamp the checkout flow` |
-| Build a normal-sized feature — design → build + teach | `/fluencyloop:feature add rate limiting to the API` | `$fluencyloop-feature add rate limiting to the API` |
+| Plan a large initiative — architecture + roadmap | `/fluencyloop:plan <what to plan>` | `$fluencyloop-plan <what to plan>` |
+| Build a normal-sized feature — design → build + teach | `/fluencyloop:feature <what to build>` | `$fluencyloop-feature <what to build>` |
 | Assemble the feature's PR view | `/fluencyloop:review` | `$fluencyloop-review` |
 | Document merged work that skipped the loop | `/fluencyloop:backfill` | `$fluencyloop-backfill` |
 
