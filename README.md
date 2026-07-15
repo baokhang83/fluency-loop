@@ -87,13 +87,8 @@ fluencyloop init
 ```
 
 This scaffolds that repo's `.fluencyloop/` state (scripts, templates, a constitution stub) and
-adds the calibration `.gitignore` guard. Skills are already user-wide, so they are *not*
-copied into the repo — unless you want contributors to get them on clone, in which case:
-
-```bash
-fluencyloop init --vendor-skills                 # Claude Code (default): .claude/skills
-fluencyloop init --vendor-skills --agent codex   # Codex: .codex/skills
-```
+adds the calibration `.gitignore` guard. It never copies agent skills into the repo; activate
+FluencyLoop through Claude Code's installation or the Codex plugin installation instead.
 
 ### On Windows
 

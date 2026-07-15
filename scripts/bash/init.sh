@@ -2,10 +2,10 @@
 # init.sh — scaffold FluencyLoop into the current repo (Stage 0, once per project).
 # Creates .fluencyloop/ for machine state (scripts + templates) and docs/fluencyloop/ for the
 # human-facing artifacts (constitution stub; per-feature design + sessions land here later).
-# Skills are installed user-wide by install.sh, so they are NOT vendored per-project unless you ask.
+# Skills are activated by the coding agent's own installation mechanism; they are never copied
+# into a project.
 #
-# Usage: init.sh [--json] [--vendor-skills] [--agent <claude|codex|both>]
-#   --vendor-skills   copy skills into the selected agent's repo directory
+# Usage: init.sh [--json]
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,21 +13,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 JSON_MODE=false
-VENDOR_SKILLS=false
-SKILLS_AGENT="claude"
 while [ "$#" -gt 0 ]; do
     arg="$1"
     case "$arg" in
         --json) JSON_MODE=true ;;
-        --vendor-skills) VENDOR_SKILLS=true ;;
-        --agent) shift; SKILLS_AGENT="${1:?--agent needs claude, codex, or both}" ;;
+        *) echo "Unknown option: $arg" >&2; exit 1 ;;
     esac
     shift
 done
-
-case "$SKILLS_AGENT" in claude|codex|both) ;; *)
-    echo "--agent must be claude, codex, or both (got '$SKILLS_AGENT')" >&2; exit 1 ;;
-esac
 
 ROOT="$(repo_root)"
 if [ -z "$ROOT" ]; then
@@ -52,18 +45,6 @@ CREATED_CONSTITUTION=false
 if [ ! -f "$CONSTITUTION" ]; then
     cp "$DIST_ROOT/templates/constitution.md" "$CONSTITUTION"
     CREATED_CONSTITUTION=true
-fi
-
-# Skills are user-wide after install. Only vendor them into the repo when explicitly asked, for
-# the agent the project chooses to support.
-SKILLS_DEST=""
-if $VENDOR_SKILLS && [ -d "$DIST_ROOT/skills" ]; then
-    vendor_skills() { mkdir -p "$1"; cp -R "$DIST_ROOT/skills/." "$1/"; }
-    case "$SKILLS_AGENT" in
-        claude) SKILLS_DEST="$ROOT/.claude/skills"; vendor_skills "$SKILLS_DEST" ;;
-        codex) SKILLS_DEST="$ROOT/.codex/skills"; vendor_skills "$SKILLS_DEST" ;;
-        both) SKILLS_DEST="$ROOT/.claude/skills, $ROOT/.codex/skills"; vendor_skills "$ROOT/.claude/skills"; vendor_skills "$ROOT/.codex/skills" ;;
-    esac
 fi
 
 # A feature is a branch, and session journals are committed — but the per-developer
@@ -97,9 +78,6 @@ if $JSON_MODE; then
         docs_dir "$DOCS" \
         constitution "$CONSTITUTION" \
         constitution_created "$CREATED_CONSTITUTION" \
-        skills_vendored "$VENDOR_SKILLS" \
-        skills_agent "$SKILLS_AGENT" \
-        skills_dir "$SKILLS_DEST" \
         push_autoremote_set "$AUTO_REMOTE_SET"
 else
     echo "Initialised FluencyLoop"
@@ -107,9 +85,4 @@ else
     echo "  docs:         $DOCS (constitution, designs, session journals)"
     $AUTO_REMOTE_SET && echo "  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)"
     $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (empty — written from your first plan or feature)"
-    if [ -n "$SKILLS_DEST" ]; then
-        echo "  skills:       $SKILLS_DEST (vendored for $SKILLS_AGENT)"
-    else
-        echo "  skills:       user-wide for $SKILLS_AGENT; pass --vendor-skills to commit them here"
-    fi
 fi

@@ -41,18 +41,9 @@ Describe 'init.ps1' {
         @((Get-Content "$script:repo/.gitattributes") | Where-Object { $_ -eq 'docs/fluencyloop/** text eol=lf' }).Count | Should -Be 1
     }
 
-    It 'vendors skills for Claude Code by default' {
+    It 'rejects removed skill-vendoring options' {
         $script:repo = New-TestRepo
-        & $script:PwshExe -NoProfile -File "$script:Bin/init.ps1" '--vendor-skills' | Out-Null
-        "$script:repo/.claude/skills/fluencyloop/SKILL.md" | Should -Exist
-        "$script:repo/.codex/skills" | Should -Not -Exist
-    }
-
-    It 'can vendor skills for Codex' {
-        $script:repo = New-TestRepo
-        & $script:PwshExe -NoProfile -File "$script:Bin/init.ps1" '--vendor-skills' '--agent' 'codex' | Out-Null
-        "$script:repo/.codex/skills/fluencyloop/SKILL.md" | Should -Exist
-        "$script:repo/.claude/skills" | Should -Not -Exist
+        (Invoke-FlExit 'init.ps1' '--vendor-skills') | Should -Not -Be 0
     }
 
     It 'sets push.autoSetupRemote' {
