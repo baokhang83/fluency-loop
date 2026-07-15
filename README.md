@@ -20,7 +20,7 @@ losing the plot.
 
 FluencyLoop is delivered as coding-agent **skills** + deterministic **bash scripts** +
 committed **docs** in `docs/fluencyloop/` (the constitution, per-feature designs, and session
-journals; the tool's own machine state stays in `.fluencyloop/`).
+journals; the tool's machine state is in `.fluencyloop/`).
 
 The core is a **per-feature loop**, with an optional planning step in front for big chunks:
 
@@ -35,10 +35,7 @@ The core is a **per-feature loop**, with an optional planning step in front for 
   slice boundary, journaled as it goes.
 - **review** — the reviewer view assembles itself from the journal, because a feature *is* its branch.
 
-The **constitution** (checkable project principles) is woven through the loop, not a stage you
-author cold: it's **born from your first plan or feature** and grows as later features **harvest**
-principles from real decisions. Nothing gates a merge — work that skips the loop is caught
-**after** merge by `backfill`.
+A **constitution** (checkable principles for your project) is woven through the loop: it's **born from your first plan or feature** and grows as later features **harvest** principles from real decisions. Nothing gates a conventional merge — work that skips the loop is caught **after** merge by `backfill`.
 
 **Requires:** a coding agent ([Claude Code](https://claude.com/claude-code) or
 [Codex](https://developers.openai.com/codex/)), `git`, and either `bash` (macOS/Linux/Git
@@ -49,7 +46,7 @@ installer or project skill vendoring step.
 ## Teaches to your level
 
 FluencyLoop doesn't lecture at a fixed depth. Before a feature touches unfamiliar ground it
-**asks** — *"For the new Maven plugin, are you familiar with `plugin.xml` and Mojo objects?"* — then keeps re-estimating what you
+**asks** — *"For the new Maven plugin, are you familiar with A and B?"* — then keeps re-estimating what you
 know from how you respond: terse on solid ground, deeper where it's shaky. What it learns is
 persisted to a **per-developer knowledge base** in `~/.fluencyloop/` (global, never committed) —
 a structured `dimension: level` profile (`java: fluent`, `reactive: learning`, `k8s: new`) the
@@ -72,12 +69,10 @@ Install FluencyLoop through its marketplace — this is the standard Claude Code
 ```
 
 The plugin includes the interactive skills and a bundled `fluencyloop` command for Claude Code's
-Bash tool. Its skills are intentionally namespaced, for example
-`/fluencyloop:feature`, so they cannot collide with another plugin's skills.
+Bash tool. Its skills are intentionally namespaced, for example `/fluencyloop:feature`, so they cannot collide with another plugin's skills.
 
 Claude Code checks enabled marketplace plugins during normal startup and applies available
-FluencyLoop updates through its native plugin updater. If a developer has disabled marketplace
-auto-updates in Claude Code, they can re-enable them in the marketplace settings.
+FluencyLoop updates through its native plugin updater. 
 
 ### Codex
 
