@@ -30,6 +30,24 @@ setup() { setup_repo; }
     [ "$(cat "$TESTREPO/app.txt")" = "existing project file" ]
 }
 
+@test "init preserves Git's error when repository initialisation fails" {
+    rm -rf "$TESTREPO/.git"
+
+    git() {
+        if [ "$1" = "init" ]; then
+            echo "simulated git init failure" >&2
+            return 1
+        fi
+        command git "$@"
+    }
+    export -f git
+
+    run bash "$DIST/fluencyloop" init
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"simulated git init failure"* ]]
+    [[ "$output" == *"unable to initialise a Git repository"* ]]
+}
+
 @test "init seeds an EMPTY constitution stub, not the authoring scaffold" {
     bash "$BIN/init.sh" >/dev/null
     run cat "$TESTREPO/docs/fluencyloop/constitution.md"

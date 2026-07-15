@@ -25,10 +25,14 @@ done
 ROOT="$(repo_root)"
 GIT_INITIALIZED=false
 if [ -z "$ROOT" ]; then
-    if ! git init >/dev/null 2>&1; then
+    GIT_INIT_ERROR="$(mktemp)"
+    if ! git init >/dev/null 2>"$GIT_INIT_ERROR"; then
+        cat "$GIT_INIT_ERROR" >&2
+        rm -f "$GIT_INIT_ERROR"
         echo "Error: unable to initialise a Git repository in the current directory." >&2
         exit 1
     fi
+    rm -f "$GIT_INIT_ERROR"
     ROOT="$(repo_root)"
     if [ -z "$ROOT" ]; then
         echo "Error: Git initialisation did not produce a repository root." >&2

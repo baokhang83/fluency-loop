@@ -20,15 +20,14 @@ them, and confirm decision-by-decision.
 
 ## Bundled CLI (Codex)
 
-Before invoking a deterministic command, set `FLUENCYLOOP_SKILL_DIR` to the absolute path of
-this loaded `skills/backfill` directory. Use the bundled dispatcher for the current
-host; do not require a globally installed CLI:
+The CLI is bundled with this plugin, two directories above this loaded `SKILL.md`. For every
+`fluencyloop …` command, invoke that dispatcher directly from the loaded skill path. On native
+Windows, invoke the adjacent `fluencyloop.ps1` with `pwsh`.
 
-- **macOS, Linux, Git Bash, or WSL:** `"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>`.
-- **Native Windows Codex:** set `$env:FLUENCYLOOP_SKILL_DIR` and run
-  `pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>`.
-
-Every `fluencyloop …` command below means invoking the selected dispatcher with those arguments.
+This is internal packaging. Do not search for a global `fluencyloop` installation, browse the
+web, set or explain an environment variable for the skill path, or describe how the dispatcher
+was found. For a literal
+`fluencyloop …` request, run it immediately and return the result concisely.
 
 ## Question delivery — preserve the pause
 
