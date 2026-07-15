@@ -18,6 +18,12 @@ components the work touched — the fluency the missing real-time loop never gav
 don't just draft and ask "ok?"; you *show them the shapes, rendered,* map each decision onto
 them, and confirm decision-by-decision.
 
+## Question delivery — preserve the pause
+
+For a real answer, choice, or confirmation, use **`AskUserQuestion` in Claude Code**. Codex has
+no equivalent question-form tool, so ask a concise standalone question in chat and stop; do not
+update an entry's trust marker until the developer answers.
+
 ## 1. Scope the work
 
 Identify what to backfill — a merged PR, a commit range, or the current branch's diff vs
@@ -94,6 +100,10 @@ components, **rendered**, with each decision tied to what it touches. Load the
   client-side — those bundles carry lone surrogate/escape sequences that fail the Artifact
   deploy (see byte-check below). The committed `design.md` keeps the Mermaid as the canonical
   source; the Artifact is the rendered view.
+- **If no visual Artifact can be published, don't fake one in the terminal.** Never render or
+  paste Mermaid source into chat as a substitute. Say that the visual briefing is unavailable in
+  this surface, point to `design.md` for GitHub/browser rendering without echoing its source, and
+  leave the relevant `trust: ⚠` markers unconfirmed until the human can review the visual.
 - **Map every decision onto the diagram.** For each decision, name the exact nodes it concerns
   and make the link visible (e.g. hovering a decision highlights those nodes). A decision the
   human can't see located on a rendered diagram teaches nothing.
@@ -142,8 +152,9 @@ Give the user the rendered URL and let them read before you ask anything.
 ## 4. Confirm — interactively, one decision at a time
 
 Do **not** ask for a blanket "looks good." Confirm **decision by decision**, using an
-interactive prompt with **one tab per decision** (the `AskUserQuestion` tool — up to 4 per
-call; batch further decisions in follow-up calls). For each decision offer:
+interactive prompt with **one tab per decision in Claude Code** (up to 4 per call; batch further
+decisions in follow-up calls). In Codex, ask one clearly labelled decision at a time in chat and
+wait for the answer. For each decision offer:
 
 - **Confirm → ✓** — they can vouch for it firsthand; upgrade `trust: ⚠` to `✓`.
 - **Keep as ⚠** — accurate enough, but they can't personally verify it; leave it flagged.

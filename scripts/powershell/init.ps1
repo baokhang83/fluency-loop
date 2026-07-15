@@ -6,10 +6,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot/common.ps1"
 
-$jsonMode = $false; $vendorSkills = $false
-foreach ($a in $args) {
-    if ($a -eq '--json') { $jsonMode = $true }
-    elseif ($a -eq '--vendor-skills') { $vendorSkills = $true }
+$jsonMode = $false
+for ($i = 0; $i -lt $args.Count; $i++) {
+    if ($args[$i] -eq '--json') { $jsonMode = $true }
+    else { throw "Unknown option: $($args[$i])" }
 }
 
 $root = FlRepoRoot
@@ -31,13 +31,6 @@ $createdConstitution = 'false'
 if (-not (Test-Path -LiteralPath $constitution)) {
     Copy-Item -Force -Path "$distRoot/templates/constitution.md" -Destination $constitution
     $createdConstitution = 'true'
-}
-
-$skillsDest = ''
-if ($vendorSkills -and (Test-Path -LiteralPath "$distRoot/skills")) {
-    $skillsDest = "$root/.claude/skills"
-    New-Item -ItemType Directory -Force -Path $skillsDest | Out-Null
-    Copy-Item -Recurse -Force -Path "$distRoot/skills/*" -Destination $skillsDest
 }
 
 # calibration is per-developer and never committed — guard against a repo vendoring one.
@@ -65,14 +58,11 @@ if ($cur -ne 'true') { & git -C $root config --local push.autoSetupRemote true; 
 if ($jsonMode) {
     FlOut (FlEmitJson @(
         'fluency_dir', $fluency, 'docs_dir', $docs, 'constitution', $constitution,
-        'constitution_created', $createdConstitution, 'skills_vendored', ([string]$vendorSkills).ToLowerInvariant(),
-        'skills_dir', $skillsDest, 'push_autoremote_set', $autoRemoteSet))
+        'constitution_created', $createdConstitution, 'push_autoremote_set', $autoRemoteSet))
 } else {
     FlOut 'Initialised FluencyLoop'
     FlOut "  state:        $fluency (scripts + templates)"
     FlOut "  docs:         $docs (constitution, designs, session journals)"
     if ($autoRemoteSet -eq 'true') { FlOut '  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)' }
     if ($createdConstitution -eq 'true') { FlOut "  constitution: $constitution (empty — written from your first plan or feature)" }
-    if ($skillsDest) { FlOut "  skills:       $skillsDest (vendored into repo)" }
-    else { FlOut '  skills:       user-wide (~/.claude/skills); pass --vendor-skills to commit them here' }
 }

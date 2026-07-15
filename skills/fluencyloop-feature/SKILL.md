@@ -10,6 +10,14 @@ the design diagrams and the session journals. You will: (1) declare the feature,
 its design, (3) build it in slices — teaching and journaling one or two real decisions at
 each slice boundary. Never gate; never lecture. Keep the developer the author.
 
+## Question delivery — preserve the pause
+
+When this workflow needs a real answer, choice, confirmation, or knowledge probe, use
+**`AskUserQuestion` in Claude Code**. **Codex has no equivalent question-form tool:** ask the
+question concisely in chat, then **stop**. Do not implement, write the decision, or move to the
+next step until the developer has answered. A chat question is a portability fallback, not
+permission to bury a real question in prose.
+
 ## 0. Preconditions
 
 Confirm `.fluencyloop/` exists (`fluencyloop check` reports it). If it does not, tell
@@ -47,8 +55,8 @@ choice comes up.
 **Probe before you dive in.** Continuously estimating the learner's knowledge is critical, and it
 starts *before* the first explanation. From the feature's intent and the code, list the domain
 concepts this work will actually require, and for each one the knowledge base doesn't already
-settle, **ask** — concisely and batched (one tab per concept via `AskUserQuestion` when there are
-several). For example, before building a Maven plugin: *"Are you familiar with `plugin.xml` and
+settle, **ask** — concisely and batched (one tab per concept in Claude Code; one concise, clearly
+separated chat prompt in Codex), then wait. For example, before building a Maven plugin: *"Are you familiar with `plugin.xml` and
 Mojo objects (`@Mojo` / `AbstractMojo`)?"* — rather than silently guessing and either boring or
 losing them. Record the answers into the knowledge base and let them set your opening depth.
 
@@ -99,10 +107,11 @@ dashes/box-drawing); publish only if the check is clean, or the deploy bounces. 
 user through what they're looking at and invite reactions — this is a conversation, not a handoff.
 
 **If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
-bouncing), **say so explicitly** — don't silently skip the "show" step — and point the user to the
-Mermaid diagrams in the feature's **`design.md`**: those render on GitHub, so the design is still
-*shown*, just in the committed doc instead of a live page. Give them the path and walk them through
-it there.
+bouncing), **say so explicitly** — don't silently skip the visual-design step. **Never attempt to
+render Mermaid in the terminal or paste a Mermaid fence into chat as a visual substitute.** Mermaid
+is durable source only. If this surface can show a local self-contained inline-SVG/HTML preview,
+use that; otherwise point the user to the feature's **`design.md`** for GitHub/browser rendering
+without echoing the diagram source, and say that no live visual preview is available here.
 
 Persist the same diagrams as **Mermaid** in `design.md` (blocks **top-level**, never nested
 in another fence, so GitHub renders them) — that's the durable, committed copy. The Artifact
@@ -174,12 +183,11 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    - **Anchor it to the rendered design diagram** — point back to the Artifact from §2 and name
      the exact shape the decision concerns, so the *why* lands on something they can see, not
      just prose. If the decision changed the design, re-render and re-check the diagram.
-   - **Real questions go through a form, never buried in prose.** Any genuine question you put to
-     the developer — a decision to sign off, a fork to choose, "which way do you want this?" —
-     **must** use `AskUserQuestion` (one tab per decision/question), not a plain-text question in
-     the middle of an explanation. (A rhetorical aside — *"if that feels shaky, say so"* — is not
-     a real question; those stay inline.) The live teaching, not the prompt, stays the point, but
-     every actual choice is a form so it's unmistakable and easy to answer.
+   - **Real questions must be unmistakable, never buried in prose.** Any genuine question you put
+     to the developer — a decision to sign off, a fork to choose, "which way do you want this?" —
+     uses `AskUserQuestion` in Claude Code (one tab per decision/question). In Codex, ask it as a
+     standalone, concise chat prompt and **wait** before continuing. (A rhetorical aside — *"if
+     that feels shaky, say so"* — is not a real question; those stay inline.)
    - **Pause and check understanding** *(where the policy calls for it — `learning` / `new`)* —
      ask if it lands, and explicitly offer to go deeper ("want me to unpack how X works, or is
      this enough to trust it?"). Then *wait* for the answer before moving on. A monologue that
@@ -252,7 +260,7 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
    rule you'd apply again, not a one-off (*"no synchronous cross-service calls in the request
    path"*, *"config is validated at load, never at use"*) — **offer to promote it to a
    constitution principle**. Be **assertive**, and ask it as a form: put the candidate to the
-   developer via `AskUserQuestion` — name the proposed principle and offer **Promote to §N** vs
+   developer using the delivery rule above — name the proposed principle and offer **Promote to §N** vs
    **Leave as a one-off** — rather than a plain-text question they might skim past. Don't wait to
    be asked. On **promote**, append it to `docs/fluencyloop/constitution.md` under `## Principles`
    as the next `§N` (short title + the non-negotiable + the why), and cite that `§N` in the
@@ -270,7 +278,7 @@ assemble the reviewer-facing view from the sessions.
 **Check what's actually possible here first** — run `gh auth status`. If `gh` isn't installed or
 authed, opening a PR isn't available *yet*. Don't just drop it: if `preferences.md` has no settled
 `gh-setup` choice, make the **one-time** offer to set `gh` up — sold on the fact that it lets you
-open the PR (and file plan issues) for them — via `AskUserQuestion` (**Yes, set it up**
+open the PR (and file plan issues) for them — using the delivery rule above (**Yes, set it up**
 *(recommended)* / **Not now**), recording `gh-setup: done` / `gh-setup: declined`. On **yes**,
 install from <https://cli.github.com> (pick the command that fits their OS — don't work from a
 hardcoded package-manager list) then `gh auth login`. If `gh` stays unavailable (declined or
@@ -284,7 +292,7 @@ once per feature. Check `~/.fluencyloop/preferences.md` (loaded in §0):
   automatic, go ahead and commit + push + open the PR yourself (run fluencyloop-review first) at
   completion; if manual, just point the user at fluencyloop-review and stop.
 - **No preference yet (this is the first feature)** — ask **exactly once**, via a single
-  `AskUserQuestion` confirmation rather than a per-feature prompt: from now on, should you commit
+  explicit confirmation using the delivery rule above rather than a per-feature prompt: from now on, should you commit
   + push **(+ open the PR, when `gh` is available)** yourself at feature completion, or keep
   handing off manually each time? (Drop the PR clause entirely if `gh` isn't available here.)
   Persist the answer to `~/.fluencyloop/preferences.md` (create it — global, uncommitted, sibling

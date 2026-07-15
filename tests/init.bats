@@ -43,6 +43,12 @@ setup() { setup_repo; }
     [ "$(grep -cxF 'docs/fluencyloop/** text eol=lf' "$TESTREPO/.gitattributes")" -eq 1 ]
 }
 
+@test "init rejects removed skill-vendoring options" {
+    run bash "$BIN/init.sh" --vendor-skills
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"Unknown option: --vendor-skills"* ]]
+}
+
 @test "init sets push.autoSetupRemote for frictionless feature-branch pushes" {
     bash "$BIN/init.sh" >/dev/null
     [ "$(git -C "$TESTREPO" config --local push.autoSetupRemote)" = "true" ]

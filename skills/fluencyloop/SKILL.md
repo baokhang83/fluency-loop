@@ -7,6 +7,12 @@ description: 'FluencyLoop — stay fluent in code as AI writes it. Router/overvi
 
 *The code and your fluency in it are produced together, or not at all.*
 
+## Question delivery
+
+FluencyLoop's stage skills use **`AskUserQuestion` in Claude Code** for genuine prompts. Codex
+has no equivalent question-form tool, so they ask a concise standalone question in chat and pause
+for the answer before continuing.
+
 FluencyLoop keeps the people behind a codebase fluent in it as AI writes more of it. At its core
 is a **per-feature loop** — design → build (teach) → review — driven by whoever is building.
 Nothing gates a merge; work that skips the loop is caught after merge by backfill.
@@ -47,8 +53,8 @@ in from there.
 fluencyloop init   # scaffolds .fluencyloop/ in the current repo
 ```
 
-This creates `.fluencyloop/` (scripts, templates, constitution stub) and copies the skills into
-`.claude/skills`. A feature is a branch (`feature/<slug>`); sessions are committed journals;
+This creates `.fluencyloop/` (scripts, templates, constitution stub). Agent skills are activated
+through the agent's installation mechanism and are never copied into the project. A feature is a branch (`feature/<slug>`); sessions are committed journals;
 the per-developer calibration profile lives globally in `~/.fluencyloop/` and is never
 committed.
 

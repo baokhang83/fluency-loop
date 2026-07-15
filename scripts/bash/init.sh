@@ -2,11 +2,10 @@
 # init.sh — scaffold FluencyLoop into the current repo (Stage 0, once per project).
 # Creates .fluencyloop/ for machine state (scripts + templates) and docs/fluencyloop/ for the
 # human-facing artifacts (constitution stub; per-feature design + sessions land here later).
-# Skills are installed user-wide by install.sh, so they are NOT vendored per-project unless you ask.
+# Skills are activated by the coding agent's own installation mechanism; they are never copied
+# into a project.
 #
-# Usage: init.sh [--json] [--vendor-skills]
-#   --vendor-skills   also copy the skills into this repo's .claude/skills (commit them so
-#                     contributors get them on clone — the OSS/team case)
+# Usage: init.sh [--json]
 
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,12 +13,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 JSON_MODE=false
-VENDOR_SKILLS=false
-for arg in "$@"; do
+while [ "$#" -gt 0 ]; do
+    arg="$1"
     case "$arg" in
         --json) JSON_MODE=true ;;
-        --vendor-skills) VENDOR_SKILLS=true ;;
+        *) echo "Unknown option: $arg" >&2; exit 1 ;;
     esac
+    shift
 done
 
 ROOT="$(repo_root)"
@@ -45,15 +45,6 @@ CREATED_CONSTITUTION=false
 if [ ! -f "$CONSTITUTION" ]; then
     cp "$DIST_ROOT/templates/constitution.md" "$CONSTITUTION"
     CREATED_CONSTITUTION=true
-fi
-
-# Skills are user-wide (install.sh -> ~/.claude/skills). Only vendor them into the repo when
-# explicitly asked (so an OSS project can commit them for contributors).
-SKILLS_DEST=""
-if $VENDOR_SKILLS && [ -d "$DIST_ROOT/skills" ]; then
-    SKILLS_DEST="$ROOT/.claude/skills"
-    mkdir -p "$SKILLS_DEST"
-    cp -R "$DIST_ROOT/skills/." "$SKILLS_DEST/"
 fi
 
 # A feature is a branch, and session journals are committed — but the per-developer
@@ -87,18 +78,15 @@ if $JSON_MODE; then
         docs_dir "$DOCS" \
         constitution "$CONSTITUTION" \
         constitution_created "$CREATED_CONSTITUTION" \
-        skills_vendored "$VENDOR_SKILLS" \
-        skills_dir "$SKILLS_DEST" \
         push_autoremote_set "$AUTO_REMOTE_SET"
 else
     echo "Initialised FluencyLoop"
     echo "  state:        $FLUENCY (scripts + templates)"
     echo "  docs:         $DOCS (constitution, designs, session journals)"
-    $AUTO_REMOTE_SET && echo "  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)"
-    $CREATED_CONSTITUTION && echo "  constitution: $CONSTITUTION (empty — written from your first plan or feature)"
-    if [ -n "$SKILLS_DEST" ]; then
-        echo "  skills:       $SKILLS_DEST (vendored into repo)"
-    else
-        echo "  skills:       user-wide (~/.claude/skills); pass --vendor-skills to commit them here"
+    if $AUTO_REMOTE_SET; then
+        echo "  git:          push.autoSetupRemote=true (feature branches push without --set-upstream)"
+    fi
+    if $CREATED_CONSTITUTION; then
+        echo "  constitution: $CONSTITUTION (empty — written from your first plan or feature)"
     fi
 fi

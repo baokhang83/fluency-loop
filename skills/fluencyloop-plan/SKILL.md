@@ -12,6 +12,12 @@ with a critical path, (5) offer to open GitHub tickets under a milestone, (6) ha
 off to `fluencyloop-feature`. The plan is a **map you build against, not a spec to ratify** —
 do not over-invest. Keep the developer the architect.
 
+## Question delivery — preserve the pause
+
+For a real answer, choice, or confirmation, use **`AskUserQuestion` in Claude Code**. Codex has
+no equivalent question-form tool, so ask a concise standalone question in chat and stop; do not
+create issues, write a settled choice, or advance the workflow until the developer answers.
+
 ## 0. Preconditions
 
 Confirm `.fluencyloop/` exists (`fluencyloop check` reports it). If not, tell the user
@@ -61,9 +67,11 @@ a CDN, and do **not** inline a minified Mermaid/JS bundle (its lone surrogates f
 invite reactions — this is a conversation.
 
 **If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
-bouncing), **say so explicitly** and point the user to the Mermaid diagrams in **`plan.md`** —
-they render on GitHub, so the architecture is still *shown*, just in the committed doc instead of
-a live page. Give them the path and walk them through it there; never silently skip the "show" step.
+bouncing), **say so explicitly** — never silently skip the visual-design step. **Never attempt to
+render Mermaid in the terminal or paste a Mermaid fence into chat as a visual substitute.** Mermaid
+is durable source only. If this surface can show a local self-contained inline-SVG/HTML preview,
+use that; otherwise point the user to **`plan.md`** for GitHub/browser rendering without echoing
+the diagram source, and say that no live visual preview is available here.
 
 Persist the same diagrams as **Mermaid** in `plan.md` under `## Architecture` (blocks
 **top-level**, never nested in another fence, so GitHub renders them). Check the shapes against
@@ -118,7 +126,7 @@ Check `gh auth status` **first**:
 
 - **`gh` is missing or unauthed** — this is worth a **one-time** setup offer, because `gh` unlocks
   real automation. Check `~/.fluencyloop/preferences.md` for a settled `gh-setup` choice:
-  - **Not settled yet** — offer **once** via `AskUserQuestion`, and *sell what it unlocks*: with
+  - **Not settled yet** — offer **once** using the delivery rule above, and *sell what it unlocks*: with
     `gh`, FluencyLoop files your whole task breakdown as GitHub issues under a milestone **for you**,
     and opens prepopulated PRs at review — instead of you running commands by hand. Frame it so
     **yes** is the easy call, e.g. *"Want me to set up `gh` so I can file these N tasks as issues +

@@ -41,6 +41,11 @@ Describe 'init.ps1' {
         @((Get-Content "$script:repo/.gitattributes") | Where-Object { $_ -eq 'docs/fluencyloop/** text eol=lf' }).Count | Should -Be 1
     }
 
+    It 'rejects removed skill-vendoring options' {
+        $script:repo = New-TestRepo
+        (Invoke-FlExit 'init.ps1' '--vendor-skills') | Should -Not -Be 0
+    }
+
     It 'sets push.autoSetupRemote' {
         $script:repo = Initialize-TestRepo
         (git -C $script:repo config --local push.autoSetupRemote) | Should -Be 'true'
