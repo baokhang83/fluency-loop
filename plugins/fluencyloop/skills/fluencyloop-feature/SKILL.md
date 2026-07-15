@@ -13,9 +13,14 @@ each slice boundary. Never gate; never lecture. Keep the developer the author.
 ## Bundled CLI (Codex)
 
 Before invoking a deterministic command, set `FLUENCYLOOP_SKILL_DIR` to the absolute path of
-this loaded `skills/fluencyloop-feature` directory. The bundled command is then
-`"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop"`. Every `fluencyloop …` command below means that
-bundled command; do not require a globally installed CLI.
+this loaded `skills/fluencyloop-feature` directory. Use the bundled dispatcher for the current
+host; do not require a globally installed CLI:
+
+- **macOS, Linux, Git Bash, or WSL:** `"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>`.
+- **Native Windows Codex:** set `$env:FLUENCYLOOP_SKILL_DIR` and run
+  `pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>`.
+
+Every `fluencyloop …` command below means invoking the selected dispatcher with those arguments.
 
 ## Question delivery — preserve the pause
 
@@ -233,9 +238,7 @@ Build the feature one **meaningful slice** at a time (a logical, commit-worthy c
      bullet schema:
 
      ```bash
-     fluencyloop decision --title "chose X over Y" --where "<file/area>" --why "<the taught why>" \
-       --alternative "<rejected option> — rejected: <why>" [--constitution §N] \
-       [--design ../design.md#anchor] --trust unverified   # or: verified
+     fluencyloop decision --title "chose X over Y" --where "<file/area>" --why "<the taught why>" --alternative "<rejected option> — rejected: <why>" [--constitution §N] [--design ../design.md#anchor] --trust unverified   # or: verified
      ```
 
      `where` is a file/area, never a line number; `trust` is about the **decision**, never the

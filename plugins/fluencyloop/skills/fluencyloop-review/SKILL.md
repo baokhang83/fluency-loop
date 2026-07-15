@@ -11,9 +11,14 @@ the feature's sessions into a summary a reviewer can read to get fluent fast.
 ## Bundled CLI (Codex)
 
 Before invoking a deterministic command, set `FLUENCYLOOP_SKILL_DIR` to the absolute path of
-this loaded `skills/fluencyloop-review` directory. The bundled command is then
-`"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop"`. Every `fluencyloop …` command below means that
-bundled command; do not require a globally installed CLI.
+this loaded `skills/fluencyloop-review` directory. Use the bundled dispatcher for the current
+host; do not require a globally installed CLI:
+
+- **macOS, Linux, Git Bash, or WSL:** `"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>`.
+- **Native Windows Codex:** set `$env:FLUENCYLOOP_SKILL_DIR` and run
+  `pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>`.
+
+Every `fluencyloop …` command below means invoking the selected dispatcher with those arguments.
 
 ## Question delivery — preserve the pause
 
@@ -61,7 +66,8 @@ The point is to remove friction, so **create a prepopulated PR** rather than lea
 to copy-paste into GitHub.
 
 1. Make sure the branch is pushed (`git push -u origin <branch>` if it has no upstream).
-2. If `gh` is available (`command -v gh`), create the PR with the assembled view as the body:
+2. If `gh` is available (check with `Get-Command gh` on native Windows or `command -v gh`
+   elsewhere), create the PR with the assembled view as the body:
 
    ```bash
    gh pr create --title "<feature intent>" --body-file <tmpfile>   # base defaults to main

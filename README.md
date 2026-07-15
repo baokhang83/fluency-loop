@@ -86,11 +86,10 @@ codex plugin add fluencyloop@fluencyloop
 The plugin makes the `$fluencyloop-*` skills available. Its bundled CLI stays private to the
 plugin and is run by those skills, so it never needs to be copied onto your PATH.
 
-After the first startup-hook release is installed and trusted, Codex checks FluencyLoop's own
-marketplace every time a new session starts and installs an available update automatically. Codex
-activates that update in the following session, not part-way through the one already running.
-The hook never refreshes another plugin. Codex will ask for a one-time hook review; approve it
-from `/hooks` to enable this behaviour.
+Codex will ask you to review FluencyLoop's startup hook once. Approve it from `/hooks` to enable
+automatic updates. From then on, at the start of each new session, the hook checks only
+FluencyLoop's marketplace. If an update is available, it installs it for the *next* session—it
+never changes FluencyLoop while you are working, and it never updates another plugin.
 
 ## Quickstart
 

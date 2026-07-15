@@ -53,6 +53,11 @@ for alias, source in {
     assert f"name: {alias}" in alias_text
     assert f"name: {source}" in source_text
     assert "## Bundled CLI (Codex)" in source_text
+    assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in source_text
+    assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in source_text
+router_text = (dist / "skills" / "fluencyloop" / "SKILL.md").read_text()
+assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in router_text
+assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in router_text
 assert claude_entry["skills"] == [
     "./claude-skills/plan",
     "./claude-skills/feature",

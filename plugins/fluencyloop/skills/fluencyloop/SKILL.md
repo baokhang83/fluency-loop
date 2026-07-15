@@ -10,9 +10,15 @@ description: 'FluencyLoop — stay fluent in code as AI writes it. Router/overvi
 ## Bundled CLI (Codex)
 
 Before invoking a deterministic command, set `FLUENCYLOOP_SKILL_DIR` to the absolute path of
-this loaded `skills/fluencyloop` directory. The bundled command is then
-`"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop"`. Every `fluencyloop …` command in this skill means
-that bundled command; it is **not** a command the developer must install on their PATH.
+this loaded `skills/fluencyloop` directory. Use the bundled dispatcher for the current host; it is
+**not** a command the developer must install on their PATH:
+
+- **macOS, Linux, Git Bash, or WSL:** `"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>`.
+- **Native Windows Codex:** set `$env:FLUENCYLOOP_SKILL_DIR` and run
+  `pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>`.
+
+Every `fluencyloop …` command in this skill means invoking the selected dispatcher with those
+arguments.
 
 ## Question delivery
 

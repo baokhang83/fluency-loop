@@ -21,9 +21,14 @@ them, and confirm decision-by-decision.
 ## Bundled CLI (Codex)
 
 Before invoking a deterministic command, set `FLUENCYLOOP_SKILL_DIR` to the absolute path of
-this loaded `skills/fluencyloop-backfill` directory. The bundled command is then
-`"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop"`. Every `fluencyloop …` command below means that
-bundled command; do not require a globally installed CLI.
+this loaded `skills/fluencyloop-backfill` directory. Use the bundled dispatcher for the current
+host; do not require a globally installed CLI:
+
+- **macOS, Linux, Git Bash, or WSL:** `"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>`.
+- **Native Windows Codex:** set `$env:FLUENCYLOOP_SKILL_DIR` and run
+  `pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>`.
+
+Every `fluencyloop …` command below means invoking the selected dispatcher with those arguments.
 
 ## Question delivery — preserve the pause
 
@@ -83,8 +88,7 @@ Then append each block with `fluencyloop decision` (the script formats it — yo
 values), marking every one backfilled and unverified:
 
 ```bash
-fluencyloop decision --title "chose X over Y" --where "<file/area>" --why "<reconstructed why>" \
-  --alternative "<rejected — why, or 'unknown'>" [--constitution §N] --trust unverified
+fluencyloop decision --title "chose X over Y" --where "<file/area>" --why "<reconstructed why>" --alternative "<rejected — why, or 'unknown'>" [--constitution §N] --trust unverified
 ```
 
 These also write `.fluencyloop/state.json` (feature, branch, `stage: build`, the session as
@@ -133,6 +137,20 @@ na=sum(1 for b in raw if b>127)
 print(f"non-ascii={na} lone-surrogates={lone} FFFD={repl} json-roundtrip={ok}")
 print("PUBLISH-SAFE" if (lone==0 and repl==0 and ok) else "DIRTY — do not publish")
 PY
+```
+
+On native Windows, use this PowerShell equivalent instead:
+
+```powershell
+$raw = [System.IO.File]::ReadAllBytes($FILE)
+$utf8 = [System.Text.UTF8Encoding]::new($false, $true)
+try { $txt = $utf8.GetString($raw); $utf8Ok = $true } catch { $txt = ''; $utf8Ok = $false }
+$lone = @($txt.ToCharArray() | Where-Object { [int][char]$_ -ge 0xD800 -and [int][char]$_ -le 0xDFFF }).Count
+$repl = @($txt.ToCharArray() | Where-Object { [int][char]$_ -eq 0xFFFD }).Count
+$nonAscii = @($raw | Where-Object { $_ -gt 127 }).Count
+try { $null = $txt | ConvertTo-Json -Compress; $jsonOk = $true } catch { $jsonOk = $false }
+"non-ascii=$nonAscii lone-surrogates=$lone FFFD=$repl json-roundtrip=$jsonOk"
+if ($utf8Ok -and $lone -eq 0 -and $repl -eq 0 -and $jsonOk) { 'PUBLISH-SAFE' } else { 'DIRTY — do not publish' }
 ```
 
 Prefer pure ASCII (HTML entities over literal box-drawing/dashes). If it reports `DIRTY`,
