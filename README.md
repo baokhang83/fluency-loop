@@ -114,15 +114,24 @@ port via `PSScriptAnalyzer` + a `Pester` suite that mirrors the bash tests.
 
 ## Quickstart
 
-From inside an `init`-ed project, start a feature:
+From inside the repository you want to work on:
 
 ```bash
+# Scaffold the project once.
+fluencyloop init
+
+# Choose one path. For a large initiative, make its architecture and roadmap first.
+fluencyloop plan "revamp the checkout flow"
+
+# For a normal-sized change, start a feature: this creates its branch, design stub, and session journal.
 fluencyloop feature "add rate limiting to the API"
 ```
 
-This creates the `feature/add-rate-limiting` branch and drops a design doc + session journal
-under `.fluencyloop/`. As you build, your agent teaches the *why* of each real decision at the
-slice boundary and records it in the journal. When you're ready to open a PR:
+Use **one** of the last two commands: `plan` is optional and is for work too large for one
+feature; it creates an architecture + roadmap under `docs/fluencyloop/plans/`. Build each roadmap
+item as a feature. `feature` creates the `feature/add-rate-limiting` branch and drops a design doc
+and a session journal under `docs/fluencyloop/`. As you build, your agent teaches the *why* of each
+real decision at the slice boundary and records it in the journal. When you're ready to open a PR:
 
 ```bash
 fluencyloop review
@@ -130,20 +139,46 @@ fluencyloop review
 
 …assembles the reviewer-facing PR view straight from those journals — no manual linking,
 because a feature *is* its branch. Shipped something without the loop? `fluencyloop backfill`
-(or `/fluencyloop-backfill`) reconstructs the journal after merge.
+reconstructs the journal after merge.
+
+### Useful commands
+
+```bash
+fluencyloop check              # inspect the active feature and un-journaled drift
+fluencyloop version            # print the installed release
+fluencyloop self upgrade       # refresh an installed copy from its source checkout
+fluencyloop calibration show   # inspect your private teaching profile
+fluencyloop calibration edit   # adjust it yourself, if you want to
+```
+
+### Calibration
+
+Calibration controls **how deeply** FluencyLoop explains a decision, never which technical choice
+it makes. Your private `~/.fluencyloop/calibration.md` records domain levels—`fluent`,
+`familiar`, `learning`, or `new`. During a feature, demonstrated engagement is appended to a
+private ledger; `fluencyloop calibration compact` turns repeated signals into deterministic level
+changes. The committed session records the work and its rationale, not a judgment about a person.
+See [the calibration and privacy rationale](MANIFESTO.md#calibration-is-private-and-deterministic).
+
+### Efficient by design
+
+FluencyLoop keeps the agent's context focused. Scripts create files, calculate branch ranges, and
+assemble slice context; the agent spends its effort on design, decisions, and teaching. It reads a
+slice diff rather than whole files, asks only what the calibration profile does not settle, and
+records rationale at the moment it is still grounded in the change. See [the efficiency
+principle](MANIFESTO.md#efficiency-is-a-product-principle).
 
 ## Use it
 
-| Step | Slash command (in your agent) |
-|------|-------------------------------|
-|  *(optionally)* Plan a big chunk — architecture + roadmap | `/fluencyloop-plan` |
-| Build a feature — design → build + teach *(per feature)* | `/fluencyloop-feature` |
-| Review — the PR view assembles itself *(per feature)* | `/fluencyloop-review` |
-| Backfill — document work that skipped the loop *(post-merge)* | `/fluencyloop-backfill` |
+| Step | Claude Code | Codex |
+|------|-------------|-------|
+| *(optionally)* Plan a big chunk — architecture + roadmap | `/fluencyloop-plan` | `$fluencyloop-plan` |
+| Build a feature — design → build + teach *(per feature)* | `/fluencyloop-feature` | `$fluencyloop-feature` |
+| Review — the PR view assembles itself *(per feature)* | `/fluencyloop-review` | `$fluencyloop-review` |
+| Backfill — document work that skipped the loop *(post-merge)* | `/fluencyloop-backfill` | `$fluencyloop-backfill` |
 
-You invoke a stage two ways: **type the slash command** (e.g. `/fluencyloop-feature`), or just
-**describe the task** ("start a feature to add rate limiting") and your agent triggers the
-matching skill from its description. Both run the same skill.
+You can also describe the task naturally, but invoking the stage skill explicitly makes the
+workflow unmistakable.
 
 The **skills** carry the interactive, calibrated behaviour (teaching at slice boundaries,
 one-question-at-a-time constitution authoring). The **scripts** carry the deterministic
