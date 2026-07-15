@@ -2,13 +2,15 @@
 
 All notable changes to FluencyLoop are documented here.
 
-## 0.2.7
+## 0.2.8
 
 ### Fixed
 
 - Codex stage skills now use the plugin-qualified names `$fluencyloop:plan`,
   `$fluencyloop:feature`, `$fluencyloop:review`, and `$fluencyloop:backfill`, without repeating
   the plugin name in the picker. Claude Code commands remain `/fluencyloop:<stage>`.
+- Codex skills now invoke the bundled dispatcher without exposing its internal path variable, and
+  `fluencyloop init` preserves Git's original error when repository initialisation fails.
 
 ## 0.2.6
 

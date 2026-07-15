@@ -62,8 +62,9 @@ for alias, source in {
     assert "it is never a chat instruction" in alias_text
     assert "globally installed" in alias_text
     assert "## Bundled CLI (Codex)" in source_text
-    assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in source_text
-    assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in source_text
+    assert "two directories above this loaded `SKILL.md`" in source_text
+    assert "Do not search for a global `fluencyloop` installation" in source_text
+    assert "FLUENCYLOOP_SKILL_DIR" not in source_text
 feature_text = read_text(root / "claude-skills" / "feature" / "SKILL.md")
 assert "If `git_repo` or `fluency` is" in feature_text
 assert "without asking the developer" in feature_text
@@ -88,8 +89,8 @@ for stage in ["plan", "feature", "review", "backfill"]:
     assert f"$fluencyloop:{stage}" in readme
     assert f"$fluencyloop-{stage}" not in readme
 router_text = read_text(dist / "skills" / "fluencyloop" / "SKILL.md")
-assert '"$FLUENCYLOOP_SKILL_DIR/../../fluencyloop" <arguments>' in router_text
-assert 'pwsh -NoProfile -ExecutionPolicy Bypass -File "$env:FLUENCYLOOP_SKILL_DIR/../../fluencyloop.ps1" <arguments>' in router_text
+assert "two directories above this loaded `SKILL.md`" in router_text
+assert "FLUENCYLOOP_SKILL_DIR" not in router_text
 assert claude_entry["skills"] == [
     "./claude-skills/plan",
     "./claude-skills/feature",
