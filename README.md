@@ -94,12 +94,16 @@ is no separate system-wide FluencyLoop installation.
 <details>
 <summary>Claude Code updates and Windows approvals</summary>
 
-Claude Code leaves third-party marketplace updates off by default. To opt in once, open
-`/plugin`, choose **Marketplaces**, select **fluencyloop**, then choose **Enable auto-update**.
-When Claude reports an update, run `/reload-plugins` to activate it in the current session.
+FluencyLoop's startup hook checks its own marketplace each session and, when an update is
+available, installs it for the next session without changing the active one. Run
+`/reload-plugins` to activate it in the current session instead.
 
-Without auto-update, run `/plugin marketplace update fluencyloop`, then
+To update at any time by hand, run `/plugin marketplace update fluencyloop`, then
 `/plugin update fluencyloop@fluencyloop`, and finally `/reload-plugins`.
+
+Claude Code's own **Enable auto-update** toggle (`/plugin` → **Marketplaces** → **fluencyloop**)
+is a separate control that stays off by default. FluencyLoop refreshes only its own package and
+does not read or change that setting.
 
 On native Windows, use the project-scoped setup in
 [Claude Code approvals](docs/claude-code-permissions.md) to reduce routine FluencyLoop, editing,

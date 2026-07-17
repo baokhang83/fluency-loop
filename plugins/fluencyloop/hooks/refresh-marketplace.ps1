@@ -1,14 +1,26 @@
 # Refresh the marketplace that supplied this plugin, then install its current FluencyLoop package.
-# Codex runs this trusted SessionStart hook. A refreshed package is picked up by the next session.
+# Codex and Claude Code both run this trusted SessionStart hook. A refreshed package is picked up
+# by the next session.
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+# Each host exports its own plugin-root variable, and that is the only trustworthy signal for which
+# host started this session. Dispatch on it rather than on which CLI happens to be installed: a
+# developer with both CLIs would otherwise have a Claude session upgrade the Codex package, since
+# the two installs are separate trees that must refresh independently.
 $pluginDir = $env:PLUGIN_ROOT
-if ([string]::IsNullOrWhiteSpace($pluginDir)) {
-    $pluginDir = $env:CLAUDE_PLUGIN_ROOT
+$hostKind = $null
+if (-not [string]::IsNullOrWhiteSpace($pluginDir)) {
+    $hostKind = 'codex'
 }
-if ([string]::IsNullOrWhiteSpace($pluginDir)) {
+else {
+    $pluginDir = $env:CLAUDE_PLUGIN_ROOT
+    if (-not [string]::IsNullOrWhiteSpace($pluginDir)) {
+        $hostKind = 'claude'
+    }
+}
+if ($null -eq $hostKind) {
     exit 0
 }
 
@@ -28,16 +40,31 @@ if ([string]::IsNullOrWhiteSpace($marketplace)) {
     exit 0
 }
 
-if ($null -eq (Get-Command codex -ErrorAction SilentlyContinue)) {
-    exit 0
-}
-
 # A local marketplace has nothing to refresh. Network and policy failures must never prevent an
 # agent session from starting, so treat them as a no-op and let the host surface its own diagnostics.
-& codex plugin marketplace upgrade $marketplace --json *> $null
-if ($LASTEXITCODE -ne 0) {
-    exit 0
-}
+if ($hostKind -eq 'codex') {
+    if ($null -eq (Get-Command codex -ErrorAction SilentlyContinue)) {
+        exit 0
+    }
 
-& codex plugin add "fluencyloop@$marketplace" --json *> $null
+    & codex plugin marketplace upgrade $marketplace --json *> $null
+    if ($LASTEXITCODE -ne 0) {
+        exit 0
+    }
+
+    & codex plugin add "fluencyloop@$marketplace" --json *> $null
+}
+else {
+    if ($null -eq (Get-Command claude -ErrorAction SilentlyContinue)) {
+        exit 0
+    }
+
+    & claude plugin marketplace update $marketplace *> $null
+    if ($LASTEXITCODE -ne 0) {
+        exit 0
+    }
+
+    # Claude Code resolves an update only for a marketplace-qualified plugin name.
+    & claude plugin update "fluencyloop@$marketplace" *> $null
+}
 exit 0
