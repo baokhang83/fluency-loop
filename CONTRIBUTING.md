@@ -2,8 +2,12 @@
 
 Questions, ideas, and bug reports are welcome — open an
 [issue](https://github.com/baokhang83/fluencyloop/issues) or start a
-[discussion](https://github.com/baokhang83/fluencyloop/discussions). This is alpha and
-actively dogfooded, so expect rough edges and fast-moving changes.
+[discussion](https://github.com/baokhang83/fluencyloop/discussions).
+
+<a id="project-status"></a>
+**Status: beta.** FluencyLoop is actively dogfooded and the workflow is stable enough for daily
+use. It stays on `0.x` while the skill and CLI surfaces settle, so expect fast-moving changes and
+read the [changelog](CHANGELOG.md) before updating.
 
 The scripts switch branches and write files in your repo, so they're tested. CI runs
 [`shellcheck`](https://www.shellcheck.net/) + a [`bats`](https://github.com/bats-core/bats-core)
