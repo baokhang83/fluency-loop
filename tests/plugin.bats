@@ -41,8 +41,8 @@ hooks = json.loads(read_text(dist / "hooks" / "hooks.json"))
 handler, = hooks["hooks"]["SessionStart"][0]["hooks"]
 assert hooks["hooks"]["SessionStart"][0]["matcher"] == "startup"
 assert handler["type"] == "command"
-assert 'plugin_root="${PLUGIN_ROOT:-}"' in handler["command"]
-assert "CLAUDE_PLUGIN_ROOT" not in handler["command"]
+assert 'plugin_root="${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}"' in handler["command"]
+assert "CLAUDE_PLUGIN_ROOT" in handler["commandWindows"]
 assert "refresh-marketplace.sh" in handler["command"]
 assert "refresh-marketplace.ps1" in handler["commandWindows"]
 assert (dist / "hooks" / "refresh-marketplace.sh").is_file()
@@ -182,7 +182,7 @@ PY
     [ -z "$output" ]
 }
 
-@test "Codex startup command ignores a Claude root and no-ops without a Codex root" {
+@test "startup command no-ops when no host exports a plugin root" {
     local hook_command
 
     run python3 - "$DIST/hooks/hooks.json" <<'PY'
@@ -196,7 +196,28 @@ PY
     [ "$status" -eq 0 ]
     hook_command="$output"
 
-    run env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT="$BATS_TEST_TMPDIR/not-a-codex-plugin" bash -c "$hook_command"
+    run env -i PATH="$PATH" bash -c "$hook_command"
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
+}
+
+# A Claude root once interpolated into an unguarded path, so every Claude session started by
+# failing the hook on a missing "/hooks/refresh-marketplace.sh".
+@test "startup command resolves the hook from a Claude plugin root" {
+    local hook_command
+
+    run python3 - "$DIST/hooks/hooks.json" <<'PY'
+import json
+import pathlib
+import sys
+
+hooks = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
+print(hooks["hooks"]["SessionStart"][0]["hooks"][0]["command"])
+PY
+    [ "$status" -eq 0 ]
+    hook_command="$output"
+
+    run env -i PATH="$PATH" CLAUDE_PLUGIN_ROOT="$DIST" bash -c "$hook_command"
     [ "$status" -eq 0 ]
     [ -z "$output" ]
 }
@@ -219,6 +240,65 @@ PY
     run cat "$calls"
     [ "$status" -eq 0 ]
     [ "$output" = $'plugin marketplace upgrade fluencyloop --json\nplugin add fluencyloop@fluencyloop --json' ]
+}
+
+@test "Claude startup refresh hook updates only its supplying marketplace" {
+    local plugin_root="$BATS_TEST_TMPDIR/claude/plugins/cache/fluencyloop/fluencyloop/0.2.1/plugins/fluencyloop"
+    local calls="$BATS_TEST_TMPDIR/claude-calls"
+    mkdir -p "$plugin_root"
+
+    claude() {
+        printf '%s\n' "$*" >> "$CLAUDE_CALLS"
+    }
+    export -f claude
+    export CLAUDE_CALLS="$calls"
+
+    run env -u PLUGIN_ROOT CLAUDE_PLUGIN_ROOT="$plugin_root" bash "$DIST/hooks/refresh-marketplace.sh"
+    [ "$status" -eq 0 ]
+    [ -z "$output" ]
+
+    run cat "$calls"
+    [ "$status" -eq 0 ]
+    [ "$output" = $'plugin marketplace update fluencyloop\nplugin update fluencyloop@fluencyloop' ]
+}
+
+# Both CLIs on one machine must not cross-refresh: the hosts keep separate package trees.
+@test "Claude startup refresh hook never drives the Codex CLI" {
+    local plugin_root="$BATS_TEST_TMPDIR/claude-only/plugins/cache/fluencyloop/fluencyloop/0.2.1/plugins/fluencyloop"
+    local calls="$BATS_TEST_TMPDIR/codex-calls-from-claude"
+    mkdir -p "$plugin_root"
+
+    codex() {
+        printf '%s\n' "$*" >> "$CODEX_CALLS"
+    }
+    claude() {
+        :
+    }
+    export -f codex claude
+    export CODEX_CALLS="$calls"
+
+    run env -u PLUGIN_ROOT CLAUDE_PLUGIN_ROOT="$plugin_root" bash "$DIST/hooks/refresh-marketplace.sh"
+    [ "$status" -eq 0 ]
+    [ ! -e "$calls" ]
+}
+
+# The PATH shim is how Codex resolves the CLI; the Claude skills address the bundled binary
+# through CLAUDE_PLUGIN_ROOT instead. A Claude session must not repoint that command.
+@test "Claude startup refresh hook leaves the Codex PATH shim alone" {
+    local plugin_root="$BATS_TEST_TMPDIR/claude-shim/plugins/cache/fluencyloop/fluencyloop/0.2.1/plugins/fluencyloop"
+    local home="$BATS_TEST_TMPDIR/home-claude-shim"
+    mkdir -p "$plugin_root" "$home"
+    printf '#!/usr/bin/env bash\n' > "$plugin_root/fluencyloop"
+    chmod +x "$plugin_root/fluencyloop"
+
+    claude() {
+        :
+    }
+    export -f claude
+
+    run env -u PLUGIN_ROOT HOME="$home" CLAUDE_PLUGIN_ROOT="$plugin_root" bash "$DIST/hooks/refresh-marketplace.sh"
+    [ "$status" -eq 0 ]
+    [ ! -e "$home/.local/bin/fluencyloop" ]
 }
 
 @test "Codex startup refresh hook maintains its managed PATH shim" {

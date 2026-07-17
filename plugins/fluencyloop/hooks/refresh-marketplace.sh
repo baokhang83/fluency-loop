@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
 # Refresh the marketplace that supplied this plugin, then install its current FluencyLoop package.
-# Codex runs this trusted SessionStart hook. A refreshed package is picked up by the next session.
+# Codex and Claude Code both run this trusted SessionStart hook. A refreshed package is picked up
+# by the next session.
 
 set -euo pipefail
 
-PLUGIN_DIR="${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}"
-[ -n "$PLUGIN_DIR" ] || exit 0
+# Each host exports its own plugin-root variable, and that is the only trustworthy signal for which
+# host started this session. Dispatch on it rather than on which CLI happens to be installed: a
+# developer with both CLIs would otherwise have a Claude session upgrade the Codex package, since
+# the two installs are separate trees that must refresh independently.
+if [ -n "${PLUGIN_ROOT:-}" ]; then
+    HOST=codex
+    PLUGIN_DIR="$PLUGIN_ROOT"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    HOST=claude
+    PLUGIN_DIR="$CLAUDE_PLUGIN_ROOT"
+else
+    exit 0
+fi
 
 # Give Codex a stable, readable command name without restoring a second runtime. This small
 # wrapper dispatches to the plugin bundle currently loaded by the host and is refreshed each
@@ -48,9 +60,9 @@ install_path_shim() {
     mv -f "$temporary" "$shim" 2>/dev/null || rm -f "$temporary"
 }
 
-# Codex has used both a versioned cache root and a marketplace-snapshot root. Derive the
+# Both hosts have used a versioned cache root and a marketplace-snapshot root. Derive the
 # marketplace instead of assuming the self-hosted catalog name: the same package can later be
-# distributed through another Codex marketplace.
+# distributed through another marketplace.
 case "$PLUGIN_DIR" in
     */plugins/cache/*/*/*)
         CACHE_TAIL="${PLUGIN_DIR#*/plugins/cache/}"
@@ -64,10 +76,23 @@ case "$PLUGIN_DIR" in
 esac
 
 [ -n "$MARKETPLACE" ] || exit 0
-install_path_shim
-command -v codex >/dev/null 2>&1 || exit 0
 
 # A local marketplace has nothing to refresh. Network and policy failures must never prevent an
 # agent session from starting, so treat them as a no-op and let the host surface its own diagnostics.
-codex plugin marketplace upgrade "$MARKETPLACE" --json >/dev/null 2>&1 || exit 0
-codex plugin add "fluencyloop@$MARKETPLACE" --json >/dev/null 2>&1 || true
+case "$HOST" in
+    codex)
+        # Only Codex resolves the CLI through the PATH shim; the Claude skills address the bundled
+        # binary through CLAUDE_PLUGIN_ROOT. Installing the shim from a Claude session would aim a
+        # Codex-owned command at the Claude tree.
+        install_path_shim
+        command -v codex >/dev/null 2>&1 || exit 0
+        codex plugin marketplace upgrade "$MARKETPLACE" --json >/dev/null 2>&1 || exit 0
+        codex plugin add "fluencyloop@$MARKETPLACE" --json >/dev/null 2>&1 || true
+        ;;
+    claude)
+        command -v claude >/dev/null 2>&1 || exit 0
+        claude plugin marketplace update "$MARKETPLACE" >/dev/null 2>&1 || exit 0
+        # Claude Code resolves an update only for a marketplace-qualified plugin name.
+        claude plugin update "fluencyloop@$MARKETPLACE" >/dev/null 2>&1 || true
+        ;;
+esac

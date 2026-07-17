@@ -2,6 +2,22 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.16
+
+### Added
+
+- Claude Code installations now refresh themselves at startup, as Codex installations already did.
+  The `SessionStart` hook dispatches on the plugin-root variable the host exports, so a Claude
+  session refreshes the Claude package through `claude plugin` and a Codex session refreshes the
+  Codex package through `codex plugin`. Neither host can refresh the other's tree, and the managed
+  PATH shim stays Codex-only because the Claude skills address the bundled CLI through
+  `CLAUDE_PLUGIN_ROOT`.
+
+### Fixed
+
+- A Claude Code install could sit indefinitely on the version it was first installed at, silently
+  running skills from a stale package, because no hook ever refreshed it.
+
 ## 0.2.15
 
 ### Fixed
