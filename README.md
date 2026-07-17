@@ -108,12 +108,6 @@ network or a policy blocks the marketplace, the session starts normally and repo
 `claude plugin list` to see the version you are actually running, and use the manual commands
 above if it looks stale.
 
-**Installed before 0.2.16?** Claude Code self-refresh shipped *in* 0.2.16, so an install at 0.2.15
-or earlier carries no hook that can refresh its own tree and stays on its current version
-indefinitely. If you also have Codex installed, such a session refreshes the *Codex* package
-instead, which can leave Claude Code pinned while `fluencyloop version` reports something newer.
-Run the manual commands above once; every later update is automatic.
-
 Claude Code's own **Enable auto-update** toggle (`/plugin` → **Marketplaces** → **fluencyloop**)
 is a separate control that stays off by default. FluencyLoop refreshes only its own package and
 does not read or change that setting.
