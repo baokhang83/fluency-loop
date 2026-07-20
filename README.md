@@ -1,5 +1,7 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/e3a04a63-4b68-4f61-ad58-60df8cc67045" alt="FluencyLoop Banner" width="1774" style="max-width: 100%; height: auto;">
+
+</p>
 	
 	<a href="https://peerlist.io/baokhang/project/fluencyloop" target="_blank" rel="noreferrer">
 				<img
@@ -8,7 +10,6 @@
 					style="width: auto; height: 72px;"
 				/>
 </a>
-</p>
 
 # FluencyLoop
 
