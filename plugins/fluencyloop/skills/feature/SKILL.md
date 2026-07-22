@@ -173,6 +173,14 @@ Persist the same diagrams as **Mermaid** in `design.md` (blocks **top-level**, n
 in another fence, so GitHub renders them) — that's the durable, committed copy. The Artifact
 is the "see it now" view; `design.md` is the record.
 
+**GitHub's Mermaid parser is strict — a diagram that renders locally can still fail on
+github.com.** Before committing, re-read every `Note over`/`Note left/right of` and arrow label
+for a bare `;` — Mermaid treats `;` as a statement terminator even inside note/label text, so
+`Note over X: did the lookup; then called Y()` silently truncates at the `;` and the remainder
+parses as garbage (`Parse error ... got 'INVALID'`). Rewrite with a comma, dash, or `<br/>` line
+break instead of `;`. If a diagram was just added or edited, paste its source into
+https://mermaid.live (or check for `;` by eye) as a final check.
+
 Refine once with the user's input. Check the design against the constitution — read
 `docs/fluencyloop/constitution.md`, and **if it's a pointer** (a `Source of truth:` line naming
 another file, e.g. `.specify/memory/constitution.md`), read *that* file for the real

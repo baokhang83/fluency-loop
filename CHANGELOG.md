@@ -2,6 +2,15 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.19
+
+### Fixed
+
+- The `plan` and `feature` skills (Claude Code and Codex) now warn against bare semicolons in
+  Mermaid `Note`/label text before committing `design.md` or `plan.md`. GitHub's Mermaid parser
+  treats `;` as a statement terminator even inside note text, so a diagram that renders fine
+  locally could still fail to render on github.com with a `Parse error ... got 'INVALID'`.
+
 ## 0.2.18
 
 ### Fixed

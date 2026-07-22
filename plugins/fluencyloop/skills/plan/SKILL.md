@@ -127,6 +127,14 @@ Persist the same diagrams as **Mermaid** in `plan.md` under `## Architecture` (b
 the constitution; if one conflicts with a principle, say so plainly in `## Constitution check` —
 do not silently "fix" it. Refine once with the user's input, then move on.
 
+**GitHub's Mermaid parser is strict — a diagram that renders locally can still fail on
+github.com.** Before committing, re-read every `Note over`/`Note left/right of` and arrow label
+for a bare `;` — Mermaid treats `;` as a statement terminator even inside note/label text, so
+`Note over X: did the lookup; then called Y()` silently truncates at the `;` and the remainder
+parses as garbage (`Parse error ... got 'INVALID'`). Rewrite with a comma, dash, or `<br/>` line
+break instead of `;`. If a diagram was just added or edited, paste its source into
+https://mermaid.live (or check for `;` by eye) as a final check.
+
 ## 3. Break it into task items
 
 Decompose the initiative into **task items — each a future `$fluencyloop:feature`**. For each,
