@@ -2,6 +2,16 @@
 
 All notable changes to FluencyLoop are documented here.
 
+## 0.2.20
+
+### Fixed
+
+- The `plan`, `feature`, and `backfill` skills (Claude Code and Codex) no longer tell the agent to
+  hand-author diagrams as inline SVG to work around a CDN block that no longer applies. Artifacts
+  render Mermaid natively, but only inside `<pre class="mermaid">` — a ` ```mermaid ` fence or a
+  plain `<pre><code>` block is left as literal text. The skills now say so directly, instead of
+  steering toward the SVG workaround that was itself producing plain-text diagrams.
+
 ## 0.2.19
 
 ### Fixed

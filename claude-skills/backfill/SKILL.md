@@ -104,12 +104,12 @@ Reconstruction on its own asks the human to rubber-stamp prose. Instead, show th
 components, **rendered**, with each decision tied to what it touches. Load the
 `artifact-design` skill, then publish a **self-contained Artifact** the user opens in a browser:
 
-- **Render the diagrams, don't link source.** The Artifact CSP blocks external scripts, so you
-  **cannot** pull Mermaid (or any lib) from a CDN. Render the design.md diagrams as **inline
-  SVG** (hand-authored) in the page. Do **not** inline a minified Mermaid/JS bundle to render
-  client-side — those bundles carry lone surrogate/escape sequences that fail the Artifact
-  deploy (see byte-check below). The committed `design.md` keeps the Mermaid as the canonical
-  source; the Artifact is the rendered view.
+- **Render the diagrams, don't link source.** Artifacts render Mermaid **natively** — no CDN
+  pull, no hand-authored SVG substitute needed. In the HTML page, put the exact same source
+  that's already in `design.md` inside `<pre class="mermaid">...</pre>`. That specific wrapper
+  is required: a ` ```mermaid ` fence, or a plain `<pre><code>` block, is left untouched by the
+  renderer and shows up as literal text instead of a diagram. The committed `design.md` keeps
+  the Mermaid as the canonical source; the Artifact is the rendered view.
 - **If no visual Artifact can be published, say so and attempt an ASCII rendering in chat.** Use
   a fenced `text` block with only ASCII characters to show the important nodes and relationships
   or flow. It is a visual sketch derived from the diagram, not Mermaid source. If the full

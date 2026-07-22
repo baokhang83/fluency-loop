@@ -83,12 +83,14 @@ This is coarser than a feature's `design.md` — the load-bearing structure the 
 in, not the per-feature detail.
 
 **Show it rendered — don't just write a file and point at it.** Publish the architecture as a
-**self-contained Artifact** (load the `artifact-design` skill first). The CSP blocks external
-scripts, so render diagrams as **inline SVG** (or clean HTML/CSS) — do **not** pull Mermaid from
-a CDN, and do **not** inline a minified Mermaid/JS bundle (its lone surrogates fail the deploy).
-**Byte-check before publishing:** valid UTF-8, no lone surrogates / `U+FFFD`, JSON-round-trips
-(prefer ASCII — HTML entities over literal dashes/box-drawing). Then walk the user through it and
-invite reactions — this is a conversation.
+**self-contained Artifact** (load the `artifact-design` skill first). Artifacts render Mermaid
+**natively** — no CDN pull, no hand-authored SVG substitute needed. In the HTML page, put the
+exact same source that's going into `plan.md` inside `<pre class="mermaid">...</pre>`. That
+specific wrapper is required: a ` ```mermaid ` fence, or a plain `<pre><code>` block, is left
+untouched by the renderer and shows up as literal text instead of a diagram. **Byte-check before
+publishing:** valid UTF-8, no lone surrogates / `U+FFFD`, JSON-round-trips (prefer ASCII in prose
+— HTML entities over literal dashes/box-drawing). Then walk the user through it and invite
+reactions — this is a conversation.
 
 **If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
 bouncing), **say so explicitly** — never silently skip the visual-design step. If this surface can

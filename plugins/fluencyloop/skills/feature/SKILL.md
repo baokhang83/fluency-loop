@@ -130,14 +130,15 @@ Draft the two defaults from the intent and the codebase:
 
 **Show them rendered — don't just write a file and point at it.** Publish the diagrams as a
 **self-contained Artifact** (a web page the user opens in a browser tab and actually sees) —
-load the `artifact-design` skill first. The Artifact CSP blocks external scripts, so you
-**cannot** pull Mermaid from a CDN: render the diagrams as **inline SVG** (or clean HTML/CSS)
-in the page itself, self-contained. Do **not** inline a minified Mermaid/JS bundle to render
-client-side — those bundles carry lone surrogate/escape sequences that make the Artifact
-deploy fail. **Byte-check before publishing:** the file must be valid UTF-8 with no lone
-surrogates / `U+FFFD` and must JSON-round-trip (prefer pure ASCII — HTML entities over literal
-dashes/box-drawing); publish only if the check is clean, or the deploy bounces. Then walk the
-user through what they're looking at and invite reactions — this is a conversation, not a handoff.
+load the `artifact-design` skill first. Artifacts render Mermaid **natively** — no CDN pull, no
+hand-authored SVG substitute needed. In the HTML page, put the exact same source that's going
+into `design.md` inside `<pre class="mermaid">...</pre>`. That specific wrapper is required: a
+` ```mermaid ` fence, or a plain `<pre><code>` block, is left untouched by the renderer and shows
+up as literal text instead of a diagram. **Byte-check before publishing:** the file must be valid
+UTF-8 with no lone surrogates / `U+FFFD` and must JSON-round-trip (prefer pure ASCII in prose —
+HTML entities over literal dashes/box-drawing); publish only if the check is clean, or the deploy
+bounces. Then walk the user through what they're looking at and invite reactions — this is a
+conversation, not a handoff.
 
 **If the Artifact tool isn't available** (the environment can't publish one, or the deploy keeps
 bouncing), **say so explicitly** — don't silently skip the visual-design step. If this surface can
